@@ -45,12 +45,15 @@ export default function Projects() {
             {filteredProjects.map((project, idx) => (
               <motion.div
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }} // Stagger effect: cards load one by one
+                whileHover={{ y: -8, transition: { duration: 0.2 } }} // HOVER EFFECT: Moves up 8px
                 key={project.title}
-                className="group bg-white dark:bg-card rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 hover:shadow-lg transition-all"
+                className="group bg-white dark:bg-card rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl transition-shadow"
               >
+                
                 {/* Placeholder for image if you add one later */}
                 <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center text-gray-400">
                     {/*  */}

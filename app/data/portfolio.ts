@@ -6,8 +6,8 @@ export const portfolioData = {
     location: "Kolkata, India",
     email: "akashmani9955@gmail.com",
     phone: "+91-8969606915",
-    github: "https://github.com/AkashManil",
-    linkedin: "https://linkedin.com/in/akashmanil",
+    github: "https://github.com/AkashMani1",
+    linkedin: "https://linkedin.com/in/akashmani1",
     resumeLink: "/resume.pdf", // Place your PDF in public folder
   },
   summary: [
