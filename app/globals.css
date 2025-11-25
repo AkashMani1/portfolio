@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
+/* 1. SETUP DARK MODE (Class-based for your toggle button) */
+@variant dark (&:where(.dark, .dark *));
+
+/* 2. DEFINE YOUR THEME DIRECTLY HERE */
+@theme {
+  --color-primary: #3b82f6;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --font-sans: var(--font-inter);
+}
+
+/* 3. DEFINE THE COLOR VARIABLES */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --card: #f3f4f6;
+  --card-foreground: #1f2937;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #171717;
+  --card-foreground: #e5e5e5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* 4. APPLY DEFAULTS */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+.container-custom {
+  max-width: 64rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .container-custom {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
