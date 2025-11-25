@@ -1,71 +1,163 @@
 "use client";
-import { motion } from "framer-motion";
-import { portfolioData } from "@/app/data/portfolio";
-import { Mail, Phone } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { portfolioData } from "../app/data/portfolio";
+import { Github, Linkedin, Copy, Check, Send, Mail } from "lucide-react";
+import FadeIn from "./FadeIn";
 
 export default function Contact() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(portfolioData.personalInfo.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+  };
+
   return (
-    <section id="contact" className="py-20 bg-gray-50 dark:bg-[#0f0f0f]">
-      <div className="container-custom max-w-3xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
-          <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Currently looking for internship opportunities. Whether you have a question or just want to say hi, I&apos;ll try my best to get back to you!
-          </p>
-        </motion.div>
+    <section id="contact" className="py-24 relative overflow-hidden">
+      {/* Background Decor (Optional Subtle Gradient Blob) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-            {/* Contact Info Card */}
-            <div className="space-y-6">
-                <div className="flex items-center p-4 bg-white dark:bg-card rounded-lg shadow-sm">
-                    <div className="bg-primary/10 p-3 rounded-full mr-4 text-primary">
-                        <Mail size={20} />
-                    </div>
-                    <div>
-                        <p className="text-xs text-gray-500 uppercase font-bold">Email</p>
-                        <a href={`mailto:${portfolioData.personalInfo.email}`} className="text-sm font-medium hover:text-primary">
-                            {portfolioData.personalInfo.email}
-                        </a>
-                    </div>
-                </div>
+      <div className="container-custom max-w-4xl">
+        <FadeIn>
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 dark:text-white">
+              Let's work together.
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Currently open for <span className="text-primary font-medium">internships</span> and new opportunities. 
+              Got a project in mind? Let's make it happen.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          
+          {/* LEFT: Contact Info & Magic Copy Button */}
+          <FadeIn delay={0.2}>
+            <div className="space-y-8">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Contact Details</p>
                 
-                <div className="flex items-center p-4 bg-white dark:bg-card rounded-lg shadow-sm">
-                    <div className="bg-primary/10 p-3 rounded-full mr-4 text-primary">
-                        <Phone size={20} />
-                    </div>
+                {/* MAGIC COPY BUTTON */}
+                <button
+                  onClick={handleCopyEmail}
+                  className="group relative w-full text-left p-6 rounded-2xl bg-white dark:bg-card border border-gray-200 dark:border-gray-800 hover:border-primary/50 transition-all shadow-sm hover:shadow-md overflow-hidden"
+                >
+                  <div className="relative z-10 flex items-center justify-between">
                     <div>
-                        <p className="text-xs text-gray-500 uppercase font-bold">Phone</p>
-                        <p className="text-sm font-medium">{portfolioData.personalInfo.phone}</p>
+                      <p className="text-xs text-gray-500 font-medium mb-1">Mail me at</p>
+                      <p className="text-lg md:text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
+                        {portfolioData.personalInfo.email}
+                      </p>
                     </div>
-                </div>
-            </div>
-
-            {/* Simple Form */}
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <input 
-                    type="text" 
-                    placeholder="Your Name" 
-                    className="w-full p-3 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none transition"
-                />
-                <input 
-                    type="email" 
-                    placeholder="Your Email" 
-                    className="w-full p-3 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none transition"
-                />
-                <textarea 
-                    rows={4} 
-                    placeholder="Message" 
-                    className="w-full p-3 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary outline-none transition"
-                ></textarea>
-                <button className="w-full py-3 bg-primary text-white rounded-lg font-bold hover:bg-blue-600 transition">
-                    Send Message
+                    
+                    <div className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all">
+                      <AnimatePresence mode="wait">
+                        {copied ? (
+                          <motion.div
+                            key="check"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                          >
+                            <Check size={20} />
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="copy"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                          >
+                            <Copy size={20} />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                  
+                  {/* Success Message Pop-up */}
+                  <AnimatePresence>
+                    {copied && (
+                      <motion.div
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: 20, opacity: 0 }}
+                        className="absolute inset-0 bg-primary flex items-center justify-center z-20"
+                      >
+                        <span className="text-white font-bold flex items-center gap-2">
+                          <Check size={18} /> Email Copied to Clipboard!
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </button>
+              </div>
+
+              {/* Socials */}
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Socials</p>
+                <div className="flex gap-4">
+                  {[
+                    { icon: Github, href: portfolioData.personalInfo.github },
+                    { icon: Linkedin, href: portfolioData.personalInfo.linkedin }
+                  ].map((Item, idx) => (
+                    <a
+                      key={idx}
+                      href={Item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-4 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      <Item.icon size={24} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* RIGHT: Minimalist Form */}
+          <FadeIn delay={0.4}>
+            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Name</label>
+                <input 
+                  type="text" 
+                  placeholder="John Doe" 
+                  className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-800 py-3 px-2 text-lg focus:outline-none focus:border-primary transition-colors placeholder-gray-400 dark:placeholder-gray-600"
+                />
+              </div>
+              
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Email</label>
+                <input 
+                  type="email" 
+                  placeholder="john@example.com" 
+                  className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-800 py-3 px-2 text-lg focus:outline-none focus:border-primary transition-colors placeholder-gray-400 dark:placeholder-gray-600"
+                />
+              </div>
+              
+              <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Message</label>
+                <textarea 
+                  rows={4} 
+                  placeholder="Tell me about your project..." 
+                  className="w-full bg-transparent border-b-2 border-gray-200 dark:border-gray-800 py-3 px-2 text-lg focus:outline-none focus:border-primary transition-colors resize-none placeholder-gray-400 dark:placeholder-gray-600"
+                ></textarea>
+              </div>
+
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-gray-900 dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary dark:hover:bg-primary hover:text-white transition-all"
+              >
+                Send Message <Send size={18} />
+              </motion.button>
             </form>
+          </FadeIn>
         </div>
       </div>
     </section>
