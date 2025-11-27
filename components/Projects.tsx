@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { portfolioData } from "@/app/data/portfolio";
+import { portfolioData } from "../app/data/portfolio"; // Check your path (might be @/data/portfolio)
 import { ExternalLink, Github } from "lucide-react";
+import FadeIn from "./FadeIn";
+import TiltCard from "./TiltCard"; // <--- IMPORT THE TILT COMPONENT
 
 const categories = ["All", "Web", "Mobile", "Others"];
 
@@ -16,11 +18,7 @@ export default function Projects() {
   return (
     <section id="projects" className="py-20 bg-gray-50 dark:bg-[#0f0f0f]">
       <div className="container-custom">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <FadeIn>
           <h2 className="text-3xl font-bold mb-8">Featured Projects</h2>
 
           {/* Filter Buttons */}
@@ -31,7 +29,7 @@ export default function Projects() {
                 onClick={() => setFilter(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   filter === cat
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-white shadow-md"
                     : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-primary"
                 }`}
               >
@@ -39,57 +37,65 @@ export default function Projects() {
               </button>
             ))}
           </div>
+        </FadeIn>
 
-          {/* Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project, idx) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.1 }} // Stagger effect: cards load one by one
-                whileHover={{ y: -8, transition: { duration: 0.2 } }} // HOVER EFFECT: Moves up 8px
-                key={project.title}
-                className="group bg-white dark:bg-card rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl transition-shadow"
-              >
-                
-                {/* Placeholder for image if you add one later */}
-                <div className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center text-gray-400">
-                    {/*  */}
-                   <span className="text-sm">Project Preview</span>
-                </div>
-                
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg group-hover:text-primary transition-colors">
-                      {project.title}
-                    </h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
-                    {project.desc}
-                  </p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tags.slice(0, 4).map((tag) => (
-                      <span key={tag} className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800">
-                        {tag}
-                      </span>
-                    ))}
+        {/* 3D TILT GRID */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProjects.map((project, idx) => (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.1 }}
+              key={project.title}
+            >
+              {/* WRAP THE CARD IN TILT COMPONENT */}
+              <TiltCard className="h-full">
+                <div className="group h-full bg-white dark:bg-card rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col">
+                  
+                  {/* Preview Area */}
+                  <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center text-gray-400 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <span className="text-sm font-bold tracking-widest uppercase border border-gray-300 dark:border-gray-700 px-4 py-1 rounded">
+                      Preview
+                    </span>
                   </div>
                   
-                  <div className="flex gap-4">
-                    <a href={project.links.live} className="flex items-center text-sm font-medium hover:text-primary transition-colors">
-                      <ExternalLink size={16} className="mr-1" /> Live
-                    </a>
-                    <a href={project.links.code} className="flex items-center text-sm font-medium hover:text-primary transition-colors">
-                      <Github size={16} className="mr-1" /> Code
-                    </a>
+                  {/* Card Content */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <div className="flex justify-between items-start mb-3">
+                        <h3 className="font-bold text-xl group-hover:text-primary transition-colors">
+                        {project.title}
+                        </h3>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 line-clamp-3 flex-grow leading-relaxed">
+                      {project.desc}
+                    </p>
+                    
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {project.tags.slice(0, 3).map((tag) => (
+                        <span key={tag} className="text-xs px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-800 font-medium text-gray-600 dark:text-gray-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex gap-4 mt-auto border-t border-gray-100 dark:border-gray-800 pt-4">
+                      <a href={project.links.live} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors">
+                        <ExternalLink size={14} className="mr-1.5" /> Live Demo
+                      </a>
+                      <a href={project.links.code} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors">
+                        <Github size={14} className="mr-1.5" /> View Code
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
