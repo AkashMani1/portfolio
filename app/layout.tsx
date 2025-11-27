@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import ScrollProgress from "@/components/ScrollProgress";
 import ScrollToTop from "@/components/ScrollToTop";
+import CursorGlow from "@/components/CursorGlow";
 
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -22,8 +23,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <CursorGlow />
           <ScrollProgress />
-           <ScrollToTop />
+          <ScrollToTop />
           
           <Navbar />
           <main className="min-h-screen flex flex-col">{children}</main>

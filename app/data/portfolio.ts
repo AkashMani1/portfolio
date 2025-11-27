@@ -36,18 +36,24 @@ export const portfolioData = {
     tools: ["Git", "GitHub", "VS Code", "Figma", "Adobe XD", "Linux", "Vercel"],
     core: ["Data Structures & Algorithms", "OOP", "DBMS", "Operating Systems", "Computer Networks"]
   },
+ 
+
   experience: [
     {
-      role: "Web Development Intern",
-      company: "CodeCrafters Technologies (Remote)",
+      role: "Full-Stack Developer Intern", 
+      company: "CodeCrafters Technologies",
       duration: "Apr 2025 – Jun 2025",
-      stack: ["React", "Tailwind CSS", "Node.js", "Express", "MongoDB", "GitHub"],
+      stack: ["React", "Node.js", "MongoDB", "Express", "Redux Toolkit", "JWT"],
+      
+     
+      description: "Spearheaded the development of a scalable e-commerce dashboard, moving from monolithic patterns to modular service-based architecture.",
+      
       points: [
-        "Built and optimized responsive web pages using React and Tailwind CSS, ensuring compatibility across mobile and desktop.",
-        "Developed RESTful APIs with Node.js and Express to handle authentication, product listings, and user profiles.",
-        "Integrated MongoDB for secure storage and retrieval of dynamic user and product data.",
-        "Collaborated with a remote development team using GitHub for version control, pull requests, and code reviews.",
-        "Participated in Agile task tracking, debugging production issues, and deploying updates to cloud platforms."
+        "Engineered a high-performance React frontend using Redux Toolkit for global state management, reducing unnecessary re-renders by 30%.",
+        "Architected secure RESTful APIs implementing JWT Authentication and Role-Based Access Control (RBAC) to protect sensitive user data.",
+        "Optimized MongoDB aggregation pipelines to handle complex product filtering, improving query response times by 40%.",
+        "Integrated extensive error handling and validation middleware (Zod/Joi) to ensure API robustness and fail-safe data entry.",
+        "Established a CI/CD workflow using GitHub Actions to automate testing and deployment, reducing manual merge conflicts."
       ]
     }
   ],
