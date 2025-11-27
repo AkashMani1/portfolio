@@ -1,8 +1,8 @@
 "use client";
 import { ArrowRight, Download, Github, Linkedin } from "lucide-react";
-import { portfolioData } from "../app/data/portfolio"; // Adjusted path based on previous fixes
+import { portfolioData } from "../app/data/portfolio";
 import FadeIn from "./FadeIn";
-import Typewriter from "./Typewriter"; // Import the new component
+import Typewriter from "./Typewriter"; 
 
 export default function Hero() {
   return (
@@ -16,8 +16,13 @@ export default function Hero() {
 
       <FadeIn delay={0.2}>
         <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
-          Hi, I&apos;m {portfolioData.personalInfo.name}. <br />
-          <span className="text-3xl md:text-5xl mt-2 block">
+          Hi, I&apos;m{" "}
+          {/* CLEAN, BOLD NAME (No Hacker Effect) */}
+          <span className="text-primary">
+            {portfolioData.personalInfo.name}
+          </span>
+          . <br />
+          <span className="text-3xl md:text-5xl mt-2 block min-h-[1.2em] text-gray-800 dark:text-gray-100">
             I am a <Typewriter />
           </span>
         </h1>
@@ -29,18 +34,34 @@ export default function Hero() {
         </p>
       </FadeIn>
 
-      {/* Buttons code remains the same... */}
       <FadeIn delay={0.4} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-         {/* ... (Keep your existing buttons code here) ... */}
-         <div className="flex gap-4">
-            <a href="#projects" className="bg-primary text-white px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-blue-600 transition-all hover:scale-105 active:scale-95">
-              View Projects <ArrowRight size={18} />
+        <div className="flex gap-4">
+            <a
+            href="#projects"
+            className="bg-primary text-white px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-blue-600 transition-all hover:scale-105 active:scale-95"
+            >
+            View Projects <ArrowRight size={18} />
             </a>
-            <a href={portfolioData.personalInfo.resumeLink} target="_blank" className="border border-gray-300 dark:border-gray-700 px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all hover:scale-105 active:scale-95">
-              Download CV <Download size={18} />
+            <a
+            href={portfolioData.personalInfo.resumeLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border border-gray-300 dark:border-gray-700 px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all hover:scale-105 active:scale-95"
+            >
+            Download CV <Download size={18} />
             </a>
         </div>
+        
+        <div className="flex gap-6 text-gray-500 dark:text-gray-400 mt-4 sm:mt-0 sm:ml-6">
+          <a href={portfolioData.personalInfo.github} target="_blank" className="hover:text-primary transition-colors hover:scale-110">
+            <Github size={24} />
+          </a>
+          <a href={portfolioData.personalInfo.linkedin} target="_blank" className="hover:text-primary transition-colors hover:scale-110">
+            <Linkedin size={24} />
+          </a>
+        </div>
       </FadeIn>
+
     </section>
   );
 }

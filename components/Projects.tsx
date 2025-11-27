@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { portfolioData } from "../app/data/portfolio"; // Check your path (might be @/data/portfolio)
+import { portfolioData } from "../app/data/portfolio";
 import { ExternalLink, Github } from "lucide-react";
 import FadeIn from "./FadeIn";
-import TiltCard from "./TiltCard"; // <--- IMPORT THE TILT COMPONENT
+import TiltCard from "./TiltCard";
 
 const categories = ["All", "Web", "Mobile", "Others"];
 
@@ -16,10 +16,11 @@ export default function Projects() {
   );
 
   return (
-    <section id="projects" className="py-20 bg-gray-50 dark:bg-[#0f0f0f]">
+    // FIX: Removed bg-gray-50 dark:bg-[#0f0f0f].
+    <section id="projects" className="py-20">
       <div className="container-custom">
         <FadeIn>
-          <h2 className="text-3xl font-bold mb-8">Featured Projects</h2>
+          <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Featured Projects</h2>
 
           {/* Filter Buttons */}
           <div className="flex gap-2 mb-10 overflow-x-auto pb-2">
@@ -30,7 +31,7 @@ export default function Projects() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   filter === cat
                     ? "bg-primary text-white shadow-md"
-                    : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-primary"
+                    : "bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary text-gray-600 dark:text-gray-300"
                 }`}
               >
                 {cat}
@@ -50,9 +51,8 @@ export default function Projects() {
               transition={{ duration: 0.4, delay: idx * 0.1 }}
               key={project.title}
             >
-              {/* WRAP THE CARD IN TILT COMPONENT */}
               <TiltCard className="h-full">
-                <div className="group h-full bg-white dark:bg-card rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col">
+                <div className="group h-full bg-white dark:bg-card/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col">
                   
                   {/* Preview Area */}
                   <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center text-gray-400 relative overflow-hidden">
@@ -65,7 +65,7 @@ export default function Projects() {
                   {/* Card Content */}
                   <div className="p-6 flex flex-col flex-grow">
                     <div className="flex justify-between items-start mb-3">
-                        <h3 className="font-bold text-xl group-hover:text-primary transition-colors">
+                        <h3 className="font-bold text-xl group-hover:text-primary transition-colors text-gray-900 dark:text-white">
                         {project.title}
                         </h3>
                     </div>
@@ -76,17 +76,17 @@ export default function Projects() {
                     
                     <div className="flex flex-wrap gap-2 mb-6">
                       {project.tags.slice(0, 3).map((tag) => (
-                        <span key={tag} className="text-xs px-2.5 py-1 rounded-md bg-gray-100 dark:bg-gray-800 font-medium text-gray-600 dark:text-gray-300">
+                        <span key={tag} className="text-xs px-2.5 py-1 rounded-md bg-gray-100 dark:bg-white/10 font-medium text-gray-600 dark:text-gray-300">
                           {tag}
                         </span>
                       ))}
                     </div>
                     
                     <div className="flex gap-4 mt-auto border-t border-gray-100 dark:border-gray-800 pt-4">
-                      <a href={project.links.live} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors">
+                      <a href={project.links.live} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors text-gray-500 dark:text-gray-400">
                         <ExternalLink size={14} className="mr-1.5" /> Live Demo
                       </a>
-                      <a href={project.links.code} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors">
+                      <a href={project.links.code} className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors text-gray-500 dark:text-gray-400">
                         <Github size={14} className="mr-1.5" /> View Code
                       </a>
                     </div>

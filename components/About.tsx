@@ -5,7 +5,7 @@ import FadeIn from "./FadeIn";
 
 export default function About() {
   return (
-    <section id="about" className="py-20 bg-gray-50 dark:bg-[#0f0f0f]">
+    <section id="about" className="py-20 bg-transparent">
       <div className="container-custom">
         <FadeIn>
           <h2 className="text-3xl font-bold mb-8">About Me</h2>
@@ -24,8 +24,8 @@ export default function About() {
           {/* Right Column: Current Focus Card */}
           <FadeIn delay={0.3} className="h-full">
             <motion.div 
-              whileHover={{ y: -5 }} // Subtle lift on hover
-              className="bg-white dark:bg-card p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 h-full"
+              whileHover={{ y: -5 }}
+              className="bg-white/60 dark:bg-card/60 backdrop-blur-md p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 h-full"
             >
               <h3 className="font-bold text-lg mb-4 text-primary">Current Focus</h3>
               <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
