@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 const navLinks = [
   { name: "About", href: "#about" },
@@ -16,8 +17,31 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => setMounted(true), []);
+
+  // JAVASCRIPT LOGIC: Detect active section on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navLinks.map(link => document.querySelector(link.href));
+      const scrollPosition = window.scrollY + 200; // Offset for better accuracy
+
+      for (const section of sections) {
+        if (section instanceof HTMLElement) {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(`#${section.id}`);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-background/80 backdrop-blur-md">
@@ -32,29 +56,41 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium hover:text-primary transition-colors"
+              className={`relative text-sm font-medium transition-colors ${
+                activeSection === link.href ? "text-primary" : "text-gray-600 dark:text-gray-400 hover:text-primary"
+              }`}
             >
               {link.name}
+              {/* Magic Underline Animation */}
+              {activeSection === link.href && (
+                <motion.span
+                  layoutId="activeNav"
+                  className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </Link>
           ))}
+          
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              aria-label="Toggle Theme"
             >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           )}
         </div>
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden flex items-center gap-4">
-          {mounted && (
+            {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2"
+              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800"
             >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
             </button>
           )}
           <button onClick={() => setIsOpen(!isOpen)} className="p-2">
@@ -63,22 +99,28 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Nav */}
+      {/* Mobile Nav Dropdown */}
       {isOpen && (
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-background">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-background absolute w-full"
+        >
           <div className="flex flex-col p-4 space-y-4">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className="text-sm font-medium hover:text-primary"
+                className={`text-sm font-medium ${
+                    activeSection === link.href ? "text-primary font-bold" : "text-gray-600 dark:text-gray-400"
+                }`}
               >
                 {link.name}
               </Link>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
     </nav>
   );
