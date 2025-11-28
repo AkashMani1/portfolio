@@ -15,8 +15,15 @@ export default function Projects() {
     (p) => filter === "All" || p.category === filter
   );
 
+  // LOGIC: Cursor Glow - Drastically reduced opacity (0.08) for subtle feel
+  const getGlowColor = (category: string) => {
+    if (category === "Web") return "rgba(59, 130, 246, 0.08)"; 
+    if (category === "Mobile") return "rgba(16, 185, 129, 0.08)"; 
+    if (category === "Others") return "rgba(249, 115, 22, 0.08)"; 
+    return "rgba(59, 130, 246, 0.08)"; 
+  };
+
   return (
-    // FIX: Removed bg-gray-50 dark:bg-[#0f0f0f].
     <section id="projects" className="py-20">
       <div className="container-custom">
         <FadeIn>
@@ -28,6 +35,7 @@ export default function Projects() {
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
+                data-glow="rgba(168, 85, 247, 0.08)" 
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   filter === cat
                     ? "bg-primary text-white shadow-md"
@@ -49,10 +57,12 @@ export default function Projects() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
+              whileHover={{ y: -10 }} // Lift Effect
               key={project.title}
+              data-glow={getGlowColor(project.category)}
             >
               <TiltCard className="h-full">
-                <div className="group h-full bg-white dark:bg-card/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col">
+                <div className="group h-full bg-white dark:bg-card/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col cursor-pointer">
                   
                   {/* Preview Area */}
                   <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center text-gray-400 relative overflow-hidden">

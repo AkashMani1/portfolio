@@ -8,7 +8,7 @@ export const portfolioData = {
     phone: "+91-8969606915",
     github: "https://github.com/AkashMani1",
     linkedin: "https://linkedin.com/in/akashmani1",
-    resumeLink: "/resume.pdf", // Place your PDF in public folder
+    resumeLink: "/resume.pdf", 
   },
   summary: [
     "Motivated Computer Science student skilled in Java, C++, and MEAN stack development. I have a strong foundation in full-stack application design, Android app creation, and data-driven problem solving.",
@@ -36,18 +36,13 @@ export const portfolioData = {
     tools: ["Git", "GitHub", "VS Code", "Figma", "Adobe XD", "Linux", "Vercel"],
     core: ["Data Structures & Algorithms", "OOP", "DBMS", "Operating Systems", "Computer Networks"]
   },
- 
-
   experience: [
     {
       role: "Full-Stack Developer Intern", 
       company: "CodeCrafters Technologies",
       duration: "Apr 2025 – Jun 2025",
       stack: ["React", "Node.js", "MongoDB", "Express", "Redux Toolkit", "JWT"],
-      
-     
       description: "Spearheaded the development of a scalable e-commerce dashboard, moving from monolithic patterns to modular service-based architecture.",
-      
       points: [
         "Engineered a high-performance React frontend using Redux Toolkit for global state management, reducing unnecessary re-renders by 30%.",
         "Architected secure RESTful APIs implementing JWT Authentication and Role-Based Access Control (RBAC) to protect sensitive user data.",
@@ -63,6 +58,8 @@ export const portfolioData = {
       desc: "Android app providing medicine recommendations, dosage instructions, and home remedies.",
       tags: ["Android", "SQLite", "Figma", "Adobe XD"],
       category: "Mobile",
+      // Custom Glow: Emerald Green
+      spotlight: "rgba(16, 185, 129, 0.2)",
       links: { live: "#", code: "#" }
     },
     {
@@ -70,6 +67,8 @@ export const portfolioData = {
       desc: "Interactive platform teaching financial management via gamification.",
       tags: ["MEAN Stack", "MongoDB", "Angular", "Node.js"],
       category: "Web",
+      // Custom Glow: Violet
+      spotlight: "rgba(139, 92, 246, 0.2)",
       links: { live: "#", code: "#" }
     },
     {
@@ -77,6 +76,8 @@ export const portfolioData = {
       desc: "Minimalistic, responsive portfolio showcasing projects and skills (This site).",
       tags: ["Next.js", "React", "TypeScript", "Tailwind", "Framer Motion"],
       category: "Web",
+      // Custom Glow: Blue
+      spotlight: "rgba(59, 130, 246, 0.2)",
       links: { live: "#", code: "#" }
     },
     {
@@ -84,6 +85,8 @@ export const portfolioData = {
       desc: "Full-stack task management app with JWT authentication and role-based access.",
       tags: ["MERN", "MongoDB", "Express", "React", "Node.js"],
       category: "Web",
+      // Custom Glow: Rose
+      spotlight: "rgba(244, 63, 94, 0.2)",
       links: { live: "#", code: "#" }
     },
     {
@@ -91,6 +94,8 @@ export const portfolioData = {
       desc: "Web portal for students to register for events and track schedules.",
       tags: ["Django", "MySQL", "HTML/CSS"],
       category: "Web",
+      // Custom Glow: Amber
+      spotlight: "rgba(245, 158, 11, 0.2)",
       links: { live: "#", code: "#" }
     },
     {
@@ -98,6 +103,8 @@ export const portfolioData = {
       desc: "Interactive interface to visualize sorting and pathfinding algorithms.",
       tags: ["React", "TypeScript", "Tailwind"],
       category: "Others",
+      // Custom Glow: Sky Blue
+      spotlight: "rgba(14, 165, 233, 0.2)",
       links: { live: "#", code: "#" }
     }
   ],

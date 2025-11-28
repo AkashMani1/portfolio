@@ -24,7 +24,7 @@ export default function Skills() {
   const getIcon = (category: string) => {
     switch (category.toLowerCase()) {
       case "languages": return <Code2 size={24} className="text-blue-500" />;
-      case "webmobile": return <Globe size={24} className="text-green-500" />; // Renamed for display logic below
+      case "webmobile": return <Globe size={24} className="text-green-500" />;
       case "database": return <Database size={24} className="text-purple-500" />;
       case "tools": return <Terminal size={24} className="text-orange-500" />;
       case "core": return <Cpu size={24} className="text-red-500" />;
@@ -49,10 +49,10 @@ export default function Skills() {
       <div className="container-custom">
         <FadeIn>
           <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-white tracking-tight">
               Technical Arsenal
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-lg">
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-lg leading-relaxed font-light">
               I don't just use tools; I choose the right technology for the problem. 
               Here is my stack for building scalable, high-performance applications.
             </p>
@@ -77,7 +77,12 @@ export default function Skills() {
 
           {Object.entries(portfolioData.skills).map(([category, skills], idx) => (
             <FadeIn key={category} delay={idx * 0.1} className="h-full">
-              <div className="relative h-full bg-gray-50/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-3xl p-8 overflow-hidden group hover:border-primary/20 transition-colors">
+              {/* UPDATED: Changed to motion.div and added whileHover */}
+              <motion.div 
+                whileHover={{ y: -5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative h-full bg-gray-50/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-3xl p-8 overflow-hidden group hover:border-primary/20 transition-colors"
+              >
                 
                 {/* Internal Card Glow */}
                 <div 
@@ -89,7 +94,7 @@ export default function Skills() {
                     <div className="p-3 rounded-2xl bg-white dark:bg-white/10 shadow-sm">
                       {getIcon(category)}
                     </div>
-                    <h3 className="text-xl font-bold capitalize text-gray-900 dark:text-gray-100">
+                    <h3 className="text-xl font-bold capitalize text-gray-900 dark:text-gray-100 tracking-tight">
                       {displayNames[category] || category}
                     </h3>
                   </div>
@@ -97,39 +102,43 @@ export default function Skills() {
                   <div className="flex flex-wrap gap-3">
                     {skills.map((skill) => (
                       <MagneticTag key={skill}>
-                        <span className="inline-block px-4 py-2 rounded-xl text-sm font-medium bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary/50 transition-colors cursor-default shadow-sm hover:shadow-md">
+                        <span className="inline-block px-4 py-2 rounded-xl text-sm font-medium font-mono bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:text-primary hover:border-primary/50 transition-colors cursor-default shadow-sm hover:shadow-md">
                           {skill}
                         </span>
                       </MagneticTag>
                     ))}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </FadeIn>
           ))}
 
-          {/* EXTRA CARD: "Currently Learning" - Shows Growth Mindset */}
+          {/* EXTRA CARD: "Currently Learning" - Also Animated */}
           <FadeIn delay={0.6} className="h-full">
-            <div className="relative h-full bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-3xl p-8 overflow-hidden group">
+            <motion.div 
+               whileHover={{ y: -5 }}
+               transition={{ type: "spring", stiffness: 300 }}
+               className="relative h-full bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-3xl p-8 overflow-hidden group"
+            >
                <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 rounded-2xl bg-primary/20 shadow-sm animate-pulse">
                      <Cpu size={24} className="text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
                     Next on Radar
                   </h3>
                </div>
-               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
                  Continuously expanding my horizon. Currently exploring:
                </p>
                <div className="flex flex-wrap gap-3">
                   {["GraphQL", "Docker", "AWS Lambda"].map((item) => (
-                     <span key={item} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+                     <span key={item} className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-mono font-bold uppercase tracking-wider">
                         {item}
                      </span>
                   ))}
                </div>
-            </div>
+            </motion.div>
           </FadeIn>
 
         </div>

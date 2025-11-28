@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Magnetic from "./Magnetic"; // <--- IMPORT THIS
 
 const navLinks = [
   { name: "About", href: "#about" },
@@ -21,11 +22,10 @@ export default function Navbar() {
 
   useEffect(() => setMounted(true), []);
 
-  // JAVASCRIPT LOGIC: Detect active section on scroll
   useEffect(() => {
     const handleScroll = () => {
       const sections = navLinks.map(link => document.querySelector(link.href));
-      const scrollPosition = window.scrollY + 200; // Offset for better accuracy
+      const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
         if (section instanceof HTMLElement) {
@@ -53,33 +53,36 @@ export default function Navbar() {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={`relative text-sm font-medium transition-colors ${
-                activeSection === link.href ? "text-primary" : "text-gray-600 dark:text-gray-400 hover:text-primary"
-              }`}
-            >
-              {link.name}
-              {/* Magic Underline Animation */}
-              {activeSection === link.href && (
-                <motion.span
-                  layoutId="activeNav"
-                  className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-            </Link>
+            // WRAP LINKS IN MAGNETIC COMPONENT
+            <Magnetic key={link.name}>
+              <Link
+                href={link.href}
+                className={`relative text-sm font-medium transition-colors px-2 py-1 ${
+                  activeSection === link.href ? "text-primary" : "text-gray-600 dark:text-gray-400 hover:text-primary"
+                }`}
+              >
+                {link.name}
+                {activeSection === link.href && (
+                  <motion.span
+                    layoutId="activeNav"
+                    className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            </Magnetic>
           ))}
           
           {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-              aria-label="Toggle Theme"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <Magnetic>
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                aria-label="Toggle Theme"
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            </Magnetic>
           )}
         </div>
 

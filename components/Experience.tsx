@@ -50,7 +50,7 @@ export default function Experience() {
                 viewMode === "summary" ? "text-gray-900 dark:text-white" : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
-              Overview
+              Summary
             </button>
             <button
               onClick={() => setViewMode("technical")}
@@ -58,7 +58,7 @@ export default function Experience() {
                 viewMode === "technical" ? "text-gray-900 dark:text-white" : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
               }`}
             >
-              Engineering
+              Technical
             </button>
           </div>
         </div>
