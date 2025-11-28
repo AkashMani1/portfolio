@@ -8,6 +8,7 @@ export const portfolioData = {
     phone: "+91-8969606915",
     github: "https://github.com/AkashMani1",
     linkedin: "https://linkedin.com/in/akashmani1",
+    // Ensure 'Developer_Resume.pdf' is inside your 'public' folder
     resumeLink: "/Developer_Resume.pdf", 
   },
   summary: [
