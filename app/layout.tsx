@@ -17,8 +17,13 @@ import PersonalChatbot from "@/components/PersonalChatbot";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Akash Mani | Full-Stack Developer",
+  // --- EDITED: Changed Title ---
+  title: "Akash Mani | Portfolio",
   description: "Portfolio of Akash Mani",
+  // --- NEW: LINK TO GEAR ICON ---
+  icons: {
+    icon: "/favicon.svg", 
+  },
 };
 
 // NEW: Explicit Viewport definition for perfect mobile scaling

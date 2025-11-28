@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Moon, Sun, Menu, X, Settings } from "lucide-react"; // Added Settings icon
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Magnetic from "./Magnetic";
@@ -11,6 +11,7 @@ const navLinks = [
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },
+  { name: "Certificates", href: "#certifications" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -56,9 +57,9 @@ export default function Navbar() {
     <>
       <nav className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-lg">
         <div className="container-custom flex h-16 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="text-xl font-bold tracking-tighter z-50 relative">
-            AM<span className="text-primary">.</span>
+          {/* Logo - CHANGED TO GEAR ICON */}
+          <Link href="/" className="text-2xl font-bold tracking-tighter z-50 relative text-primary hover:rotate-90 transition-transform duration-500" aria-label="Home">
+            <Settings size={28} strokeWidth={2.5} />
           </Link>
 
           {/* Desktop Nav */}
