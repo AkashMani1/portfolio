@@ -8,7 +8,7 @@ export const portfolioData = {
     phone: "+91-8969606915",
     github: "https://github.com/AkashMani1",
     linkedin: "https://linkedin.com/in/akashmani1",
-    resumeLink: "/resume.pdf", 
+    resumeLink: "/Developer_Resume.pdf", 
   },
   summary: [
     "Motivated Computer Science student skilled in Java, C++, and MEAN stack development. I have a strong foundation in full-stack application design, Android app creation, and data-driven problem solving.",
