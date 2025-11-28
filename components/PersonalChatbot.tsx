@@ -1,9 +1,8 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, Bot, Minimize2, Sparkles, FileText, Github, ExternalLink, Users } from "lucide-react";
+import { MessageSquare, X, Send, Bot, Minimize2, Sparkles, FileText, Github, ExternalLink, Users, AlertCircle } from "lucide-react";
 import { portfolioData } from "../app/data/portfolio";
-import Fuse from "fuse.js";
 
 // --- TYPES ---
 type Message = {
@@ -11,70 +10,9 @@ type Message = {
   text: string;
   sender: 'user' | 'bot';
   timestamp: Date;
-  actionLink?: { text: string; url: string; icon?: any }; // Logic for buttons
+  isError?: boolean;
+  actionLink?: { text: string; url: string; icon?: any };
 };
-
-// --- THE KNOWLEDGE BASE (THE BRAIN) ---
-// We map potential questions (keys) to answers (values).
-const knowledgeBase = [
-  {
-    keys: ["resume", "cv", "download", "pdf", "document", "hiring"],
-    answer: "You can download my full resume below. It contains my detailed work history and academic records.",
-    link: { text: "Download Resume", url: portfolioData.personalInfo.resumeLink, icon: FileText }
-  },
-  {
-    keys: ["skills", "stack", "technologies", "languages", "coding", "java", "react", "nextjs"],
-    answer: `My technical arsenal includes:
-    • Languages: ${portfolioData.skills.languages.join(", ")}
-    • Web: ${portfolioData.skills.webMobile.join(", ")}
-    • Tools: ${portfolioData.skills.tools.join(", ")}`
-  },
-  {
-    keys: ["projects", "work", "portfolio", "apps", "built", "development"],
-    answer: "I have built several scalable applications. You can check out my 'Medical App', 'Financial Platform', or this 'Portfolio Website'. Which one would you like to know more about?"
-  },
-  {
-    keys: ["contact", "email", "reach", "phone", "call", "message", "hire"],
-    answer: `I am currently open for opportunities! You can email me directly at ${portfolioData.personalInfo.email}.`
-  },
-  {
-    keys: ["github", "code", "repo", "git"],
-    answer: "Check out my raw code and contributions on GitHub.",
-    link: { text: "Visit GitHub", url: portfolioData.personalInfo.github, icon: Github }
-  },
-  {
-    keys: ["linkedin", "social", "connect", "network"],
-    answer: "Let's connect professionally on LinkedIn.",
-    link: { text: "Visit LinkedIn", url: portfolioData.personalInfo.linkedin, icon: ExternalLink }
-  },
-  {
-    keys: ["experience", "internship", "job", "company", "codecrafters"],
-    answer: `I interned at ${portfolioData.experience[0].company} as a ${portfolioData.experience[0].role}. I optimized backend performance and built scalable UI components.`
-  },
-  {
-    keys: ["about", "who", "yourself", "intro", "summary"],
-    answer: "I am a Computer Science student and Full-Stack Developer based in Kolkata. I love building scalable systems and solving algorithmic problems."
-  },
-  // Specific Project Queries
-  {
-    keys: ["medical", "android", "doctor"],
-    answer: "My Medical App uses Android (Java/Kotlin) and SQLite. It provides medicine recommendations and works offline.",
-    link: { text: "View Medical App", url: "#projects", icon: Sparkles }
-  },
-  {
-    keys: ["financial", "finance", "money", "gamified"],
-    answer: "The Gamified Financial Literacy Platform is a MEAN stack app that teaches stock market basics through interactive gameplay.",
-    link: { text: "View Finance App", url: "#projects", icon: Sparkles }
-  }
-];
-
-// --- FUZZY SEARCH CONFIGURATION ---
-const fuseOptions = {
-  includeScore: true,
-  threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything (0.4 allows for typos)
-  keys: ["keys"]
-};
-const fuse = new Fuse(knowledgeBase, fuseOptions);
 
 export default function PersonalChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -83,14 +21,12 @@ export default function PersonalChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can help you find his Resume, explain his projects, or list his skills. Try asking me anything!",
+      text: "Hi! I'm Akash's AI Assistant. 🤖\nI'm powered by advanced AI to answer anything about his skills, experience, or projects. Ask me away!",
       sender: 'bot',
       timestamp: new Date()
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
-  
-  // NEW: State for Live Visitor Count
   const [liveVisitors, setLiveVisitors] = useState(12);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -110,65 +46,74 @@ export default function PersonalChatbot() {
     }
   }, [isOpen]);
 
-  // NEW: Simulation of Live Visitors (Fluctuates every few seconds)
+  // Simulation of Live Visitors
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveVisitors(prev => {
         const change = Math.random() > 0.5 ? 1 : -1;
         const newValue = prev + change;
-        return newValue < 8 ? 8 : newValue > 25 ? 25 : newValue; // Keep reasonable range
+        return newValue < 8 ? 8 : newValue > 25 ? 25 : newValue;
       });
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  // --- THE BRAIN: GENERATE RESPONSE ---
+  // --- THE BRAIN: CONNECT TO AI API ---
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userText = inputValue;
-    setInputValue(""); // Clear input immediately
+    setInputValue(""); // Clear input
 
+    // 1. Add User Message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: userText,
       sender: 'user',
       timestamp: new Date()
     };
-
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    // AI SIMULATION DELAY
-    setTimeout(() => {
-      // 1. Search Knowledge Base using Fuzzy Logic
-      const result = fuse.search(userText);
-      
-      let botResponse: Message;
+    try {
+      // 2. Call the Next.js API Route
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userText }),
+      });
 
-      if (result.length > 0) {
-        // Found a match!
-        const match = result[0].item;
-        botResponse = {
-          id: (Date.now() + 1).toString(),
-          text: match.answer,
-          sender: 'bot',
-          timestamp: new Date(),
-          actionLink: match.link // Attach button if available
-        };
-      } else {
-        // Fallback for unknown queries
-        botResponse = {
-          id: (Date.now() + 1).toString(),
-          text: "I'm still learning about that! Try asking about 'Resume', 'Skills', 'Projects', or 'Contact'.",
-          sender: 'bot',
-          timestamp: new Date()
-        };
+      const data = await response.json();
+
+      // IMPROVED ERROR HANDLING: Check for both 'error' and 'reply' fields
+      if (!response.ok) {
+        throw new Error(data.error || data.reply || "Failed to fetch response");
       }
 
-      setMessages(prev => [...prev, botResponse]);
+      // 3. Add AI Response (With Safety Fallback)
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.reply || "I received an empty response. Please try again.", // Safety check here
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botMessage]);
+
+    } catch (error: any) {
+      console.error("Chat Error:", error);
+      // Fallback Error Message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        // Display the ACTUAL error message from the backend if available
+        text: error.message || "I'm having trouble connecting to the AI brain right now. (Make sure GEMINI_API_KEY is set in .env.local)",
+        sender: 'bot',
+        timestamp: new Date(),
+        isError: true
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -234,15 +179,15 @@ export default function PersonalChatbot() {
                 <div>
                   <h3 className="font-bold text-sm text-gray-900 dark:text-white">Akash AI Assistant</h3>
                   
-                  {/* NEW: Live Visitor Count */}
+                  {/* Live Visitor Count */}
                   <div className="flex items-center gap-3 mt-0.5">
                     <p className="text-[10px] text-green-500 font-medium flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                      Bot Active
+                      Powered by Gemini
                     </p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
                       <Users size={10} />
-                      {liveVisitors} Live Visitors
+                      {liveVisitors} Online
                     </p>
                   </div>
 
@@ -261,27 +206,17 @@ export default function PersonalChatbot() {
                     className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
                       msg.sender === 'user' 
                         ? 'bg-primary text-white rounded-br-none' 
-                        : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-bl-none'
+                        : msg.isError 
+                          ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 rounded-bl-none'
+                          : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-bl-none'
                     }`}
                   >
-                    {msg.text.split('\n').map((line, i) => (
+                    {msg.isError && <AlertCircle size={16} className="inline-block mr-2 -mt-0.5" />}
+                    {/* SAFEGUARD: Added fallback for undefined text */}
+                    {(msg.text || "").split('\n').map((line, i) => (
                       <p key={i} className={i > 0 ? "mt-2" : ""}>{line}</p>
                     ))}
                   </div>
-                  
-                  {/* Action Link Button (if exists) */}
-                  {msg.actionLink && (
-                    <motion.a
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      href={msg.actionLink.url}
-                      target={msg.actionLink.url.startsWith("http") ? "_blank" : "_self"}
-                      className="mt-2 flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-2 rounded-xl text-xs font-bold text-primary hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm"
-                    >
-                      {msg.actionLink.icon && <msg.actionLink.icon size={14} />}
-                      {msg.actionLink.text}
-                    </motion.a>
-                  )}
                 </div>
               ))}
               
