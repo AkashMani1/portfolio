@@ -273,7 +273,7 @@ export default function PersonalChatbot() {
                     {hint}
                   </button>
                 ))}
-              </div>
+              </div>n
             </div>
           </motion.div>
         )}
