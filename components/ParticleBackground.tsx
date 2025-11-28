@@ -1,12 +1,20 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme(); // FIX: Use resolvedTheme instead of theme
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for mount to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -16,12 +24,10 @@ export default function ParticleBackground() {
     let particlesArray: Particle[] = [];
     let animationFrameId: number;
 
-    // Configuration
-    const numberOfParticles = 80; // Calculate based on screen size normally, but 80 is safe
+    const numberOfParticles = 80;
     const connectionDistance = 120;
     const mouseRadius = 150;
 
-    // Handle Resize
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -29,7 +35,6 @@ export default function ParticleBackground() {
     window.addEventListener("resize", handleResize);
     handleResize();
 
-    // Mouse Interaction
     const mouse = { x: -1000, y: -1000 };
     const handleMouseMove = (event: MouseEvent) => {
       mouse.x = event.x;
@@ -37,7 +42,6 @@ export default function ParticleBackground() {
     };
     window.addEventListener("mousemove", handleMouseMove);
 
-    // PARTICLE CLASS (The Physics)
     class Particle {
       x: number;
       y: number;
@@ -48,50 +52,45 @@ export default function ParticleBackground() {
       constructor() {
         this.x = Math.random() * (canvas?.width || 0);
         this.y = Math.random() * (canvas?.height || 0);
-        // Random velocity between -0.5 and 0.5
         this.directionX = Math.random() * 1 - 0.5;
         this.directionY = Math.random() * 1 - 0.5;
         this.size = Math.random() * 2 + 1;
       }
 
-      // Update position
       update() {
-        // Wall collision detection (Bounce)
         if (this.x > (canvas?.width || 0) || this.x < 0) this.directionX = -this.directionX;
         if (this.y > (canvas?.height || 0) || this.y < 0) this.directionY = -this.directionY;
 
-        // Mouse interaction (Repel)
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < mouseRadius) {
-            // Move away from mouse
             if (mouse.x < this.x && this.x < (canvas?.width || 0) - 10) this.x += 2;
             if (mouse.x > this.x && this.x > 10) this.x -= 2;
             if (mouse.y < this.y && this.y < (canvas?.height || 0) - 10) this.y += 2;
             if (mouse.y > this.y && this.y > 10) this.y -= 2;
         }
 
-        // Move particle
         this.x += this.directionX;
         this.y += this.directionY;
 
         this.draw();
       }
 
-      // Draw particle
       draw() {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        // Color based on theme (handled roughly here, optimized for performance)
-        ctx.fillStyle = theme === "dark" ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.2)";
+        
+        // FIX: Check resolvedTheme to ensure visibility
+        ctx.fillStyle = resolvedTheme === "dark" 
+          ? "rgba(255,255,255,0.3)" // White particles for Dark Mode
+          : "rgba(0,0,0,0.2)";      // Black particles for Light Mode
         ctx.fill();
       }
     }
 
-    // Initialize
     const init = () => {
       particlesArray = [];
       for (let i = 0; i < numberOfParticles; i++) {
@@ -99,7 +98,6 @@ export default function ParticleBackground() {
       }
     };
 
-    // Animation Loop
     const animate = () => {
       if (!ctx || !canvas) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -111,7 +109,6 @@ export default function ParticleBackground() {
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Draw lines between particles (The Network Effect)
     const connect = () => {
       let opacityValue = 1;
       for (let a = 0; a < particlesArray.length; a++) {
@@ -123,7 +120,9 @@ export default function ParticleBackground() {
           if (distance < (connectionDistance * connectionDistance)) {
             opacityValue = 1 - distance / 15000;
             if (!ctx) return;
-            ctx.strokeStyle = theme === "dark" 
+            
+            // FIX: Check resolvedTheme here too
+            ctx.strokeStyle = resolvedTheme === "dark" 
                 ? `rgba(255,255,255,${opacityValue})` 
                 : `rgba(0,0,0,${opacityValue})`;
             ctx.lineWidth = 0.5;
@@ -144,7 +143,9 @@ export default function ParticleBackground() {
       window.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [theme]);
+  }, [resolvedTheme, mounted]); // Re-run when theme resolves
+
+  if (!mounted) return null;
 
   return (
     <canvas
