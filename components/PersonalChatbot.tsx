@@ -11,7 +11,6 @@ type Message = {
   sender: 'user' | 'bot';
   timestamp: Date;
   isError?: boolean;
-  actionLink?: { text: string; url: string; icon?: any };
 };
 
 export default function PersonalChatbot() {
@@ -21,7 +20,7 @@ export default function PersonalChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Akash's AI Assistant. 🤖\nI'm powered by advanced AI to answer anything about his skills, experience, or projects. Ask me away!",
+      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can provide his Resume, discuss his projects, or share his contact info. How can I help?",
       sender: 'bot',
       timestamp: new Date()
     }
@@ -58,12 +57,35 @@ export default function PersonalChatbot() {
     return () => clearInterval(interval);
   }, []);
 
+  // --- HELPER: PARSE LINKS IN TEXT ---
+  const renderMessageText = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+|\/[\w-]+\.pdf)/g; // Detects http links OR local .pdf files
+    const parts = text.split(urlRegex);
+
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a 
+            key={i} 
+            href={part} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline font-bold break-all"
+          >
+            {part.startsWith("/") ? "Download PDF" : part}
+          </a>
+        );
+      }
+      return part;
+    });
+  };
+
   // --- THE BRAIN: CONNECT TO AI API ---
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userText = inputValue;
-    setInputValue(""); // Clear input
+    setInputValue(""); 
 
     // 1. Add User Message
     const userMessage: Message = {
@@ -76,7 +98,6 @@ export default function PersonalChatbot() {
     setIsTyping(true);
 
     try {
-      // 2. Call the Next.js API Route
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,15 +106,12 @@ export default function PersonalChatbot() {
 
       const data = await response.json();
 
-      // IMPROVED ERROR HANDLING: Check for both 'error' and 'reply' fields
-      if (!response.ok) {
-        throw new Error(data.error || data.reply || "Failed to fetch response");
-      }
+      if (!response.ok) throw new Error(data.error || data.reply || "Failed to fetch response");
 
-      // 3. Add AI Response (With Safety Fallback)
+      // 3. Add AI Response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.reply || "I received an empty response. Please try again.", // Safety check here
+        text: data.reply || "I received an empty response. Please try again.",
         sender: 'bot',
         timestamp: new Date()
       };
@@ -101,11 +119,9 @@ export default function PersonalChatbot() {
 
     } catch (error: any) {
       console.error("Chat Error:", error);
-      // Fallback Error Message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        // Display the ACTUAL error message from the backend if available
-        text: error.message || "I'm having trouble connecting to the AI brain right now. (Make sure GEMINI_API_KEY is set in .env.local)",
+        text: error.message || "I'm having trouble connecting to the AI brain right now.",
         sender: 'bot',
         timestamp: new Date(),
         isError: true
@@ -137,14 +153,10 @@ export default function PersonalChatbot() {
             className="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-gradient-to-r from-primary to-blue-600 text-white shadow-2xl border border-white/20 backdrop-blur-md"
           >
             <Bot size={28} />
-            
-            {/* Notification Badge */}
             <span className="absolute top-0 right-0 -mt-1 -mr-1 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
             </span>
-
-            {/* Hover Tooltip */}
             <AnimatePresence>
               {isHovered && (
                 <motion.div
@@ -178,19 +190,16 @@ export default function PersonalChatbot() {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-gray-900 dark:text-white">Akash AI Assistant</h3>
-                  
-                  {/* Live Visitor Count */}
                   <div className="flex items-center gap-3 mt-0.5">
                     <p className="text-[10px] text-green-500 font-medium flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                      Powered by Gemini
+                      Gemini Powered
                     </p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
                       <Users size={10} />
                       {liveVisitors} Online
                     </p>
                   </div>
-
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-colors text-gray-500">
@@ -212,9 +221,10 @@ export default function PersonalChatbot() {
                     }`}
                   >
                     {msg.isError && <AlertCircle size={16} className="inline-block mr-2 -mt-0.5" />}
-                    {/* SAFEGUARD: Added fallback for undefined text */}
-                    {(msg.text || "").split('\n').map((line, i) => (
-                      <p key={i} className={i > 0 ? "mt-2" : ""}>{line}</p>
+                    
+                    {/* PARSE AND RENDER LINKS */}
+                    {renderMessageText(msg.text || "").map((part, i) => (
+                      <span key={i}>{part}</span>
                     ))}
                   </div>
                 </div>
@@ -253,7 +263,6 @@ export default function PersonalChatbot() {
                 </button>
               </div>
               
-              {/* Quick Prompts */}
               <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
                 {["Download CV", "Tech Stack?", "Experience?"].map((hint) => (
                   <button

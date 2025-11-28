@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next"; // Import Viewport
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -12,7 +12,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { CommandMenu } from "@/components/CommandMenu";
-import PersonalChatbot from "@/components/PersonalChatbot"; // <--- 1. NEW IMPORT
+import PersonalChatbot from "@/components/PersonalChatbot";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -21,12 +21,24 @@ export const metadata: Metadata = {
   description: "Portfolio of Akash Mani",
 };
 
+// NEW: Explicit Viewport definition for perfect mobile scaling
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false, // Prevents accidental zooming on inputs
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground`}>
+      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SmoothScroll />
           <ParticleBackground />
@@ -35,12 +47,12 @@ export default function RootLayout({
           <ScrollToTop />
           
           <CommandMenu /> 
-          <PersonalChatbot /> {/* <--- 2. ADD CHATBOT HERE */}
+          <PersonalChatbot />
           <Toaster position="bottom-right" theme="system" />
           <Analytics />
 
           <Navbar />
-          <main className="min-h-screen flex flex-col relative z-10">
+          <main className="min-h-screen flex flex-col relative z-10 overflow-x-hidden">
             {children}
           </main>
           <Footer />
