@@ -9,13 +9,11 @@ import { Github, Linkedin, Copy, Check, Send, Calendar, Loader2, AlertCircle, X 
 import FadeIn from "./FadeIn";
 import confetti from "canvas-confetti"; 
 import { toast } from "sonner";
+import { db } from "../app/lib/firebase"; // IMPORT FIREBASE
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-// --- CONFIGURATION ---
-// STEP 1: Go to Calendly.com (or Cal.com), create an account, and copy your scheduling link.
-// STEP 2: Paste that link inside the quotes below.
 const CALENDLY_URL = "https://calendly.com/akashmani9955/30min"; 
 
-// 1. DEFINE VALIDATION SCHEMA
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
@@ -26,9 +24,8 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
-  const [showScheduler, setShowScheduler] = useState(false); // NEW: State for modal
+  const [showScheduler, setShowScheduler] = useState(false);
 
-  // 2. SETUP FORM HOOK
   const {
     register,
     handleSubmit,
@@ -48,35 +45,37 @@ export default function Contact() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // --- UPDATED SUBMIT LOGIC WITH FIREBASE ---
   const onSubmit = async (data: FormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    
-    const end = Date.now() + 1000;
-    const colors = ["#3b82f6", "#10b981"];
-    (function frame() {
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors,
+    try {
+      // 1. Save to Firebase
+      await addDoc(collection(db, "contact_logs"), {
+        name: data.name,
+        email: data.email,
+        message: data.message,
+        timestamp: serverTimestamp(),
       });
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors,
-      });
-      if (Date.now() < end) requestAnimationFrame(frame);
-    })();
 
-    toast.success(`Thanks, ${data.name}!`, {
-      description: "Message sent successfully. I'll reply shortly.",
-      duration: 5000,
-    });
-    
-    reset();
+      // 2. Play Confetti
+      const end = Date.now() + 1000;
+      const colors = ["#3b82f6", "#10b981"];
+      (function frame() {
+        confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+        confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+        if (Date.now() < end) requestAnimationFrame(frame);
+      })();
+
+      // 3. Show Success Toast
+      toast.success(`Thanks, ${data.name}!`, {
+        description: "Your message has been saved to the database. I'll reply soon.",
+        duration: 5000,
+      });
+      
+      reset();
+    } catch (error) {
+      console.error("Firebase Error:", error);
+      toast.error("Failed to save message. Please check your connection.");
+    }
   };
 
   return (
@@ -98,13 +97,12 @@ export default function Contact() {
 
         <div className="grid md:grid-cols-5 gap-12 items-start">
           
-          {/* LEFT: Actions (2/5 width) */}
+          {/* LEFT: Actions */}
           <div className="md:col-span-2 space-y-8">
             <FadeIn delay={0.2}>
               <div className="space-y-6">
                 <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Fast Actions</p>
                 
-                {/* COPY EMAIL BUTTON */}
                 <button
                   onClick={handleCopyEmail}
                   className="group relative w-full text-left p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/50 transition-all shadow-sm hover:shadow-md overflow-hidden"
@@ -122,9 +120,8 @@ export default function Contact() {
                   </div>
                 </button>
 
-                {/* SCHEDULE CALL BUTTON - NOW FUNCTIONAL */}
                 <button
-                  onClick={() => setShowScheduler(true)} // Opens Modal
+                  onClick={() => setShowScheduler(true)}
                   className="group relative w-full block p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/50 transition-all shadow-sm hover:shadow-md text-left"
                 >
                   <div className="flex items-center justify-between">
@@ -141,7 +138,6 @@ export default function Contact() {
                 </button>
               </div>
 
-              {/* Socials */}
               <div className="mt-10 space-y-4">
                 <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Connect</p>
                 <div className="flex gap-3">
@@ -164,7 +160,7 @@ export default function Contact() {
             </FadeIn>
           </div>
 
-          {/* RIGHT: Validated Form (3/5 width) */}
+          {/* RIGHT: Validated Form */}
           <div className="md:col-span-3">
             <FadeIn delay={0.4}>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white/50 dark:bg-white/5 p-8 rounded-3xl border border-gray-100 dark:border-white/5 backdrop-blur-sm">
@@ -176,7 +172,7 @@ export default function Contact() {
                       {...register("name")}
                       type="text" 
                       placeholder="John Doe" 
-                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 ${errors.name ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
+                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.name ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
                     />
                     {errors.name && (
                       <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
@@ -191,7 +187,7 @@ export default function Contact() {
                       {...register("email")}
                       type="email" 
                       placeholder="john@example.com" 
-                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 ${errors.email ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
+                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.email ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
                     />
                     {errors.email && (
                       <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
@@ -207,7 +203,7 @@ export default function Contact() {
                     {...register("message")}
                     rows={5} 
                     placeholder="Tell me about your project..." 
-                    className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors resize-none placeholder-gray-400 dark:placeholder-gray-600 ${errors.message ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
+                    className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors resize-none placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.message ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
                   ></textarea>
                   {errors.message && (
                     <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
@@ -235,7 +231,6 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* SCHEDULER MODAL */}
       <AnimatePresence>
         {showScheduler && (
           <motion.div
@@ -249,20 +244,17 @@ export default function Contact() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()} // Prevent close when clicking inside
+              onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-4xl h-[80vh] bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800"
             >
-              {/* Close Button */}
               <button 
                 onClick={() => setShowScheduler(false)}
                 className="absolute top-4 right-4 z-10 p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors"
               >
                 <X size={20} />
               </button>
-
-              {/* Iframe for Calendly/Cal.com */}
               <iframe 
-                src={CALENDLY_URL} // Use the constant
+                src={CALENDLY_URL}
                 className="w-full h-full"
                 title="Schedule a meeting"
               ></iframe>

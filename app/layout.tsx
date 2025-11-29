@@ -13,6 +13,7 @@ import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/react";
 import { CommandMenu } from "@/components/CommandMenu";
 import PersonalChatbot from "@/components/PersonalChatbot";
+import PageViews from "@/components/PageViews"; 
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -55,6 +56,7 @@ export default function RootLayout({
           <PersonalChatbot />
           <Toaster position="bottom-right" theme="system" />
           <Analytics />
+          <PageViews />
 
           <Navbar />
           <main className="min-h-screen flex flex-col relative z-10 overflow-x-hidden">
