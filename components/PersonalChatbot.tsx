@@ -1,8 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, Bot, Minimize2, Sparkles, FileText, Github, ExternalLink, Users, AlertCircle } from "lucide-react";
-import { portfolioData } from "../app/data/portfolio";
+import { Send, Bot, Minimize2, Users, AlertCircle, Calendar, Clock, FileText, Download, ExternalLink } from "lucide-react";
+
+// --- CONFIGURATION ---
+const CALENDLY_URL = "https://calendly.com/"; 
+const EMAIL_ADDRESS = "akash@example.com"; 
 
 // --- TYPES ---
 type Message = {
@@ -11,6 +14,7 @@ type Message = {
   sender: 'user' | 'bot';
   timestamp: Date;
   isError?: boolean;
+  type?: 'text' | 'appointment';
 };
 
 export default function PersonalChatbot() {
@@ -20,9 +24,10 @@ export default function PersonalChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can provide his Resume, discuss his projects, or share his contact info. How can I help?",
+      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can provide his Resume, discuss his projects, or schedule a meeting. How can I help?",
       sender: 'bot',
-      timestamp: new Date()
+      timestamp: new Date(),
+      type: 'text'
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -31,21 +36,27 @@ export default function PersonalChatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // --- SCROLL LOGIC ---
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior, block: "end" });
+    }, 100);
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping, isOpen]);
+    if (isOpen) scrollToBottom("smooth");
+  }, [messages, isTyping]); 
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 300);
+      setTimeout(() => {
+        inputRef.current?.focus();
+        scrollToBottom("auto");
+      }, 300);
     }
   }, [isOpen]);
 
-  // Simulation of Live Visitors
+  // Live Visitor Simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveVisitors(prev => {
@@ -57,34 +68,117 @@ export default function PersonalChatbot() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- HELPER: PARSE LINKS IN TEXT ---
-  const renderMessageText = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+|\/[\w-]+\.pdf)/g; // Detects http links OR local .pdf files
-    const parts = text.split(urlRegex);
-
+  // --- FORMATTING ENGINE ---
+  
+  // 1. Parser for Bold text (**text**) inside a string
+  const parseBold = (text: string) => {
+    const parts = text.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, i) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a 
-            key={i} 
-            href={part} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline font-bold break-all"
-          >
-            {part.startsWith("/") ? "Download PDF" : part}
-          </a>
-        );
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-bold text-gray-900 dark:text-gray-100">{part.slice(2, -2)}</strong>;
       }
       return part;
     });
   };
 
-  // --- THE BRAIN: CONNECT TO AI API ---
+  // 2. Parser for Links and PDFs (The complex one from before)
+  const parseLinksAndPDFs = (text: string) => {
+    const splitRegex = /(\[[^\]]+\]\([^)]+\)|https?:\/\/[^\s]+|\/[\w-]+\.pdf)/g;
+    const parts = text.split(splitRegex).filter(Boolean);
+
+    return parts.map((part, i) => {
+      const mdMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      const urlMatch = part.match(/^(https?:\/\/[^\s]+|\/[\w-]+\.pdf)$/);
+
+      if (mdMatch || urlMatch) {
+        const url = mdMatch ? mdMatch[2] : part;
+        const label = mdMatch ? mdMatch[1] : (url.startsWith('/') ? "Download File" : url);
+        const isPDF = url.toLowerCase().endsWith('.pdf') || url.includes("drive.google.com");
+
+        if (isPDF) {
+          return (
+            <a 
+              key={i} 
+              href={url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 p-3 my-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all group no-underline"
+            >
+              <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center text-red-500 dark:text-red-400 group-hover:scale-110 transition-transform">
+                <FileText size={20} />
+              </div>
+              <div className="flex flex-col overflow-hidden">
+                <span className="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">
+                   {label === url || label === "Download File" ? "Resume.pdf" : label}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                   <Download size={10} /> Click to download
+                </span>
+              </div>
+            </a>
+          );
+        }
+
+        return (
+          <a 
+            key={i} 
+            href={url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline break-all"
+          >
+            {label} <ExternalLink size={12} className="inline" />
+          </a>
+        );
+      }
+      
+      // If it's just text, Parse BOLD inside it
+      const cleanPart = part.replace(/^\[|\]$/g, ''); 
+      if (!cleanPart.trim()) return null;
+      return <span key={i}>{parseBold(cleanPart)}</span>;
+    });
+  };
+
+  // 3. Main Message Renderer (Handles Lists and Newlines)
+  const renderFormattedMessage = (text: string) => {
+    // Ensure bullets start on new lines if the AI messed up formatting
+    const formattedText = text.replace(/([^\n])\s(\*|-)\s/g, '$1\n$2 ');
+    
+    // Split into lines
+    const lines = formattedText.split('\n');
+
+    return (
+      <div className="space-y-1">
+        {lines.map((line, index) => {
+          // Detect Bullet Points (* or -)
+          const isBullet = line.trim().match(/^[\*-]\s/);
+          
+          if (isBullet) {
+             const content = line.trim().substring(2); // Remove "* "
+             return (
+               <div key={index} className="flex gap-2 items-start ml-1">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                  <div className="flex-1">
+                    {parseLinksAndPDFs(content)}
+                  </div>
+               </div>
+             );
+          }
+          
+          // Render Normal Line (if not empty)
+          if (line.trim() === "") return <div key={index} className="h-2" />; // Spacer
+          return <div key={index}>{parseLinksAndPDFs(line)}</div>;
+        })}
+      </div>
+    );
+  };
+
+  // --- MAIN LOGIC ---
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userText = inputValue;
+    const lowerText = userText.toLowerCase();
     setInputValue(""); 
 
     // 1. Add User Message
@@ -92,11 +186,29 @@ export default function PersonalChatbot() {
       id: Date.now().toString(),
       text: userText,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
+      type: 'text'
     };
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
+    // 2. CHECK FOR APPOINTMENT KEYWORDS
+    if (lowerText.includes("book") || lowerText.includes("appointment") || lowerText.includes("schedule") || lowerText.includes("meet")) {
+      setTimeout(() => {
+        const appointmentMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: "I'd love to connect! You can schedule a time directly on my calendar below.",
+          sender: 'bot',
+          timestamp: new Date(),
+          type: 'appointment' 
+        };
+        setMessages(prev => [...prev, appointmentMessage]);
+        setIsTyping(false);
+      }, 800); 
+      return; 
+    }
+
+    // 3. Normal API Call
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -108,12 +220,12 @@ export default function PersonalChatbot() {
 
       if (!response.ok) throw new Error(data.error || data.reply || "Failed to fetch response");
 
-      // 3. Add AI Response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: data.reply || "I received an empty response. Please try again.",
         sender: 'bot',
-        timestamp: new Date()
+        timestamp: new Date(),
+        type: 'text'
       };
       setMessages(prev => [...prev, botMessage]);
 
@@ -124,7 +236,8 @@ export default function PersonalChatbot() {
         text: error.message || "I'm having trouble connecting to the AI brain right now.",
         sender: 'bot',
         timestamp: new Date(),
-        isError: true
+        isError: true,
+        type: 'text'
       };
       setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -193,11 +306,11 @@ export default function PersonalChatbot() {
                   <div className="flex items-center gap-3 mt-0.5">
                     <p className="text-[10px] text-green-500 font-medium flex items-center gap-1">
                       <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                      Gemini Powered
+                      Online
                     </p>
                     <p className="text-[10px] text-gray-500 dark:text-gray-400 font-medium flex items-center gap-1">
                       <Users size={10} />
-                      {liveVisitors} Online
+                      {liveVisitors} Viewers
                     </p>
                   </div>
                 </div>
@@ -208,25 +321,61 @@ export default function PersonalChatbot() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-black/20">
+            <div 
+              className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 dark:bg-black/20 scroll-smooth overscroll-contain"
+              onWheel={(e) => e.stopPropagation()} 
+            >
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div 
-                    className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
-                      msg.sender === 'user' 
-                        ? 'bg-primary text-white rounded-br-none' 
-                        : msg.isError 
-                          ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 rounded-bl-none'
-                          : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-bl-none'
-                    }`}
-                  >
-                    {msg.isError && <AlertCircle size={16} className="inline-block mr-2 -mt-0.5" />}
-                    
-                    {/* PARSE AND RENDER LINKS */}
-                    {renderMessageText(msg.text || "").map((part, i) => (
-                      <span key={i}>{part}</span>
-                    ))}
-                  </div>
+                  
+                  {/* TEXT MESSAGES (INCLUDES PDF CARDS & FORMATTED LISTS) */}
+                  {msg.type !== 'appointment' && (
+                    <div 
+                      className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                        msg.sender === 'user' 
+                          ? 'bg-primary text-white rounded-br-none' 
+                          : msg.isError 
+                            ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-300 rounded-bl-none'
+                            : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-700 dark:text-gray-200 rounded-bl-none'
+                      }`}
+                    >
+                      {msg.isError && <AlertCircle size={16} className="inline-block mr-2 -mt-0.5" />}
+                      
+                      {/* USE THE NEW FORMATTING ENGINE */}
+                      {renderFormattedMessage(msg.text || "")}
+                    </div>
+                  )}
+
+                  {/* APPOINTMENT CARD */}
+                  {msg.type === 'appointment' && (
+                    <div className="max-w-[85%] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl rounded-bl-none p-4 shadow-sm">
+                       <div className="flex items-center gap-2 mb-2 text-gray-900 dark:text-white font-semibold">
+                          <Calendar className="text-primary" size={18} />
+                          <span>Schedule a Meeting</span>
+                       </div>
+                       <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                          {msg.text}
+                       </p>
+                       <div className="space-y-2">
+                         <a 
+                           href={CALENDLY_URL} 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           className="flex items-center justify-center gap-2 w-full py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors"
+                         >
+                           <Clock size={16} />
+                           Book via Calendly
+                         </a>
+                         <a 
+                           href={`mailto:${EMAIL_ADDRESS}`}
+                           className="flex items-center justify-center gap-2 w-full py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                         >
+                           <Send size={16} />
+                           Send Email Instead
+                         </a>
+                       </div>
+                    </div>
+                  )}
                 </div>
               ))}
               
@@ -239,7 +388,7 @@ export default function PersonalChatbot() {
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} className="h-1" />
             </div>
 
             {/* Input Area */}
@@ -251,7 +400,7 @@ export default function PersonalChatbot() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Ask for resume, skills, etc..."
+                  placeholder="Ask for resume, booking, etc..."
                   className="w-full bg-gray-100 dark:bg-gray-900 border-none rounded-xl py-3 pl-4 pr-10 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder-gray-400 dark:placeholder-gray-600 dark:text-white"
                 />
                 <button
@@ -264,7 +413,7 @@ export default function PersonalChatbot() {
               </div>
               
               <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-                {["Download CV", "Tech Stack?", "Experience?"].map((hint) => (
+                {["Book Appointment", "Resume", "Skills"].map((hint) => (
                   <button
                     key={hint}
                     onClick={() => { setInputValue(hint); handleSend(); }}
@@ -273,7 +422,7 @@ export default function PersonalChatbot() {
                     {hint}
                   </button>
                 ))}
-              </div>n
+              </div>
             </div>
           </motion.div>
         )}
