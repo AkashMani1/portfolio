@@ -1,11 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, Minimize2, Users, AlertCircle, Calendar, Clock, FileText, Download, ExternalLink } from "lucide-react";
+import { 
+  Send, Bot, Minimize2, Users, AlertCircle, Calendar, Clock, 
+  FileText, Download, ExternalLink, Phone, Mail, Linkedin, Github 
+} from "lucide-react";
 
 // --- CONFIGURATION ---
 const CALENDLY_URL = "https://calendly.com/"; 
-const EMAIL_ADDRESS = "akash@example.com"; 
+const EMAIL_ADDRESS = "akashmani9955@gmail.com"; 
 
 // --- TYPES ---
 type Message = {
@@ -24,7 +27,7 @@ export default function PersonalChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can provide his Resume, discuss his projects, or schedule a meeting. How can I help?",
+      text: "Hi! I'm Akash's AI Assistant. 🤖\nI can provide his Resume, discuss his projects, or share his contact info. How can I help?",
       sender: 'bot',
       timestamp: new Date(),
       type: 'text'
@@ -56,7 +59,6 @@ export default function PersonalChatbot() {
     }
   }, [isOpen]);
 
-  // Live Visitor Simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setLiveVisitors(prev => {
@@ -68,9 +70,9 @@ export default function PersonalChatbot() {
     return () => clearInterval(interval);
   }, []);
 
-  // --- FORMATTING ENGINE ---
-  
-  // 1. Parser for Bold text (**text**) inside a string
+  // --- PARSING ENGINE ---
+
+  // 1. Simple Bold Parser
   const parseBold = (text: string) => {
     const parts = text.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, i) => {
@@ -81,93 +83,130 @@ export default function PersonalChatbot() {
     });
   };
 
-  // 2. Parser for Links and PDFs (The complex one from before)
-  const parseLinksAndPDFs = (text: string) => {
-    const splitRegex = /(\[[^\]]+\]\([^)]+\)|https?:\/\/[^\s]+|\/[\w-]+\.pdf)/g;
+  // 2. Advanced Content Parser (Links, Emails, Phones, Socials)
+  const parseRichContent = (text: string) => {
+    // REGEX for splitting text into actionable parts:
+    // 1. Markdown Links [ ]( )
+    // 2. URLs (http...)
+    // 3. Local PDFs (/.pdf)
+    // 4. Emails
+    // 5. Phone Numbers (Simple international format)
+    const splitRegex = /(\[[^\]]+\]\([^)]+\)|https?:\/\/[^\s]+|\/[\w-]+\.pdf|[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+|\+?\d[\d -]{8,15}\d)/g;
+    
     const parts = text.split(splitRegex).filter(Boolean);
 
     return parts.map((part, i) => {
+      // A. CHECK FOR MARKDOWN LINKS OR URLS
       const mdMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
       const urlMatch = part.match(/^(https?:\/\/[^\s]+|\/[\w-]+\.pdf)$/);
 
       if (mdMatch || urlMatch) {
         const url = mdMatch ? mdMatch[2] : part;
         const label = mdMatch ? mdMatch[1] : (url.startsWith('/') ? "Download File" : url);
-        const isPDF = url.toLowerCase().endsWith('.pdf') || url.includes("drive.google.com");
 
-        if (isPDF) {
+        // A1. PDF Files
+        if (url.toLowerCase().endsWith('.pdf') || url.includes("drive.google.com")) {
           return (
-            <a 
-              key={i} 
-              href={url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-3 my-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all group no-underline"
-            >
+            <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 my-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all group no-underline">
               <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center text-red-500 dark:text-red-400 group-hover:scale-110 transition-transform">
                 <FileText size={20} />
               </div>
               <div className="flex flex-col overflow-hidden">
-                <span className="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">
-                   {label === url || label === "Download File" ? "Resume.pdf" : label}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                   <Download size={10} /> Click to download
-                </span>
+                <span className="font-bold text-gray-800 dark:text-gray-100 text-sm truncate">{label === url || label === "Download File" ? "Resume.pdf" : label}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1"><Download size={10} /> Click to download</span>
               </div>
             </a>
           );
         }
 
+        // A2. Social Links (LinkedIn / GitHub) - Custom Styling
+        if (url.includes("linkedin.com")) {
+            return (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 my-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors w-fit">
+                    <Linkedin size={16} /> <span className="text-sm font-semibold">LinkedIn Profile</span>
+                </a>
+            );
+        }
+        if (url.includes("github.com")) {
+            return (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 my-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors w-fit">
+                    <Github size={16} /> <span className="text-sm font-semibold">GitHub Profile</span>
+                </a>
+            );
+        }
+
+        // A3. Standard Links
         return (
-          <a 
-            key={i} 
-            href={url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline break-all"
-          >
+          <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium hover:underline break-all">
             {label} <ExternalLink size={12} className="inline" />
           </a>
         );
       }
-      
-      // If it's just text, Parse BOLD inside it
+
+      // B. CHECK FOR EMAILS (mailto:)
+      if (part.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+$/)) {
+          return (
+            <a key={i} href={`mailto:${part}`} className="flex items-center gap-2 p-2 my-1 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/40 transition-colors w-fit">
+                <Mail size={16} /> <span className="text-sm font-semibold">{part}</span>
+            </a>
+          );
+      }
+
+      // C. CHECK FOR PHONE NUMBERS (tel:)
+      if (part.match(/^\+?\d[\d -]{8,15}\d$/)) {
+          return (
+            <a key={i} href={`tel:${part.replace(/\D/g, '')}`} className="flex items-center gap-2 p-2 my-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors w-fit">
+                <Phone size={16} /> <span className="text-sm font-semibold">{part}</span>
+            </a>
+          );
+      }
+
+      // D. REGULAR TEXT (Parse Bold)
       const cleanPart = part.replace(/^\[|\]$/g, ''); 
-      if (!cleanPart.trim()) return null;
+      if (!cleanPart.trim()) return <span key={i}> </span>; // Keep spaces
       return <span key={i}>{parseBold(cleanPart)}</span>;
     });
   };
 
-  // 3. Main Message Renderer (Handles Lists and Newlines)
+  // 3. Render Message Block
   const renderFormattedMessage = (text: string) => {
-    // Ensure bullets start on new lines if the AI messed up formatting
+    // Clean up bullets and newlines
     const formattedText = text.replace(/([^\n])\s(\*|-)\s/g, '$1\n$2 ');
-    
-    // Split into lines
     const lines = formattedText.split('\n');
 
     return (
       <div className="space-y-1">
         {lines.map((line, index) => {
-          // Detect Bullet Points (* or -)
+          // Detect Bullet Points
           const isBullet = line.trim().match(/^[\*-]\s/);
           
           if (isBullet) {
-             const content = line.trim().substring(2); // Remove "* "
+             const content = line.trim().substring(2); 
              return (
                <div key={index} className="flex gap-2 items-start ml-1">
                   <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                  <div className="flex-1">
-                    {parseLinksAndPDFs(content)}
+                  <div className="flex-1 break-words">
+                    {parseRichContent(content)}
                   </div>
                </div>
              );
           }
           
-          // Render Normal Line (if not empty)
-          if (line.trim() === "") return <div key={index} className="h-2" />; // Spacer
-          return <div key={index}>{parseLinksAndPDFs(line)}</div>;
+          // Detect Labels (e.g., "Email:") to force a new line for the interactive element
+          const hasLabel = line.match(/^(Email|Phone|LinkedIn|GitHub|Website):/i);
+          if (hasLabel) {
+              const label = line.split(':')[0];
+              const content = line.substring(label.length + 1).trim();
+              return (
+                  <div key={index} className="mb-1">
+                      <span className="font-bold text-gray-700 dark:text-gray-300 block text-xs uppercase tracking-wider mb-0.5">{label}</span>
+                      {parseRichContent(content)}
+                  </div>
+              )
+          }
+
+          if (line.trim() === "") return <div key={index} className="h-2" />;
+          return <div key={index} className="break-words">{parseRichContent(line)}</div>;
         })}
       </div>
     );
@@ -181,7 +220,6 @@ export default function PersonalChatbot() {
     const lowerText = userText.toLowerCase();
     setInputValue(""); 
 
-    // 1. Add User Message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: userText,
@@ -192,7 +230,7 @@ export default function PersonalChatbot() {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    // 2. CHECK FOR APPOINTMENT KEYWORDS
+    // Appointment Intercept
     if (lowerText.includes("book") || lowerText.includes("appointment") || lowerText.includes("schedule") || lowerText.includes("meet")) {
       setTimeout(() => {
         const appointmentMessage: Message = {
@@ -208,7 +246,6 @@ export default function PersonalChatbot() {
       return; 
     }
 
-    // 3. Normal API Call
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -217,12 +254,11 @@ export default function PersonalChatbot() {
       });
 
       const data = await response.json();
-
-      if (!response.ok) throw new Error(data.error || data.reply || "Failed to fetch response");
+      if (!response.ok) throw new Error(data.error || data.reply);
 
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.reply || "I received an empty response. Please try again.",
+        text: data.reply || "I received an empty response.",
         sender: 'bot',
         timestamp: new Date(),
         type: 'text'
@@ -328,7 +364,6 @@ export default function PersonalChatbot() {
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                   
-                  {/* TEXT MESSAGES (INCLUDES PDF CARDS & FORMATTED LISTS) */}
                   {msg.type !== 'appointment' && (
                     <div 
                       className={`max-w-[85%] p-3.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
@@ -340,13 +375,10 @@ export default function PersonalChatbot() {
                       }`}
                     >
                       {msg.isError && <AlertCircle size={16} className="inline-block mr-2 -mt-0.5" />}
-                      
-                      {/* USE THE NEW FORMATTING ENGINE */}
                       {renderFormattedMessage(msg.text || "")}
                     </div>
                   )}
 
-                  {/* APPOINTMENT CARD */}
                   {msg.type === 'appointment' && (
                     <div className="max-w-[85%] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl rounded-bl-none p-4 shadow-sm">
                        <div className="flex items-center gap-2 mb-2 text-gray-900 dark:text-white font-semibold">
@@ -357,21 +389,11 @@ export default function PersonalChatbot() {
                           {msg.text}
                        </p>
                        <div className="space-y-2">
-                         <a 
-                           href={CALENDLY_URL} 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           className="flex items-center justify-center gap-2 w-full py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors"
-                         >
-                           <Clock size={16} />
-                           Book via Calendly
+                         <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors">
+                           <Clock size={16} /> Book via Calendly
                          </a>
-                         <a 
-                           href={`mailto:${EMAIL_ADDRESS}`}
-                           className="flex items-center justify-center gap-2 w-full py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                         >
-                           <Send size={16} />
-                           Send Email Instead
+                         <a href={`mailto:${EMAIL_ADDRESS}`} className="flex items-center justify-center gap-2 w-full py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                           <Send size={16} /> Send Email Instead
                          </a>
                        </div>
                     </div>
