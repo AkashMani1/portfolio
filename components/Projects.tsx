@@ -25,7 +25,10 @@ export default function Projects() {
 
         if (!querySnapshot.empty) {
           const data = querySnapshot.docs.reduce<CloudProject[]>((acc, doc) => {
-            const project = { id: doc.id, ...doc.data() };
+            const project: Record<string, unknown> & { id: string } = {
+              id: doc.id,
+              ...doc.data(),
+            };
 
             const isValidProject =
               typeof project.title === "string" &&
