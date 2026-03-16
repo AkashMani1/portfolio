@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 
 const words = [
   "Full-Stack Developer",
-  "Computer Science Student",
-  "UI/UX Enthusiast",
-  "Problem Solver"
+  "Backend-Focused Builder",
+  "React & Node.js Engineer",
+  "Product-Minded Problem Solver"
 ];
 
 export default function Typewriter() {

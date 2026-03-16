@@ -18,16 +18,14 @@ import PageViews from "@/components/PageViews";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  // --- EDITED: Changed Title ---
-  title: "Akash Mani | Portfolio",
-  description: "Portfolio of Akash Mani",
-  // --- NEW: LINK TO GEAR ICON ---
+  title: "Akash Mani | Full-Stack Developer",
+  description:
+    "Portfolio of Akash Mani, a full-stack developer building modern web applications with React, Next.js, Node.js, APIs, and scalable product foundations.",
   icons: {
-    icon: "/favicon.svg", 
+    icon: "/favicon.svg",
   },
 };
 
-// NEW: Explicit Viewport definition for perfect mobile scaling
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

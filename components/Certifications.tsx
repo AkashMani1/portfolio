@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Award, Code, GraduationCap, ExternalLink, Loader2 } from "lucide-react";
 import FadeIn from "./FadeIn";
-import { db } from "../app/lib/firebase"; // Import Firebase DB
+import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { portfolioData, CertificationItem } from "@/app/data/portfolio";
 
-// Placeholder for simulations (Keep static or move to DB later)
 const simulationData = [
   {
     title: "JPMorgan Software Engineering",
@@ -27,18 +27,20 @@ const simulationData = [
 ];
 
 export default function Certifications() {
-  const [certifications, setCertifications] = useState<any[]>([]);
+  const [certifications, setCertifications] = useState<CertificationItem[]>(portfolioData.certifications);
   const [loading, setLoading] = useState(true);
 
-  // 1. FETCH FROM FIREBASE
   useEffect(() => {
     const fetchCertifications = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "certifications"));
-        const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setCertifications(data);
+        if (!querySnapshot.empty) {
+          const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as CertificationItem[];
+          setCertifications(data);
+        }
       } catch (error) {
         console.error("Error fetching certifications:", error);
+        setCertifications(portfolioData.certifications);
       } finally {
         setLoading(false);
       }
@@ -66,10 +68,8 @@ export default function Certifications() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          {/* Render Formal Certifications from DB */}
           {certifications.map((cert, idx) => (
-            <FadeIn key={cert.id || idx} delay={idx * 0.1}>
+            <FadeIn key={`${cert.title}-${idx}`} delay={idx * 0.1}>
               <motion.div
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300 }}
@@ -81,11 +81,15 @@ export default function Certifications() {
                 <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">
                   {cert.desc}
                 </p>
+                {cert.link && cert.link !== "#" && (
+                  <a href={cert.link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+                    View Certificate <ExternalLink size={14} />
+                  </a>
+                )}
               </motion.div>
             </FadeIn>
           ))}
 
-          {/* Render Job Simulations (Static) */}
           {simulationData.map((sim, idx) => (
             <FadeIn key={sim.title} delay={(certifications.length + idx) * 0.1}>
               <motion.div
@@ -102,9 +106,11 @@ export default function Certifications() {
                 <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">
                   {sim.desc}
                 </p>
-                <a href={sim.link} className="mt-4 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
-                  View Certificate <ExternalLink size={14} />
-                </a>
+                {sim.link !== "#" && (
+                  <a href={sim.link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
+                    View Certificate <ExternalLink size={14} />
+                  </a>
+                )}
               </motion.div>
             </FadeIn>
           ))}

@@ -8,6 +8,7 @@ import Magnetic from "./Magnetic";
 
 const navLinks = [
   { name: "About", href: "#about" },
+  { name: "Value", href: "#value" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },

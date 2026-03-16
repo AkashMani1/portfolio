@@ -4,34 +4,34 @@ import { motion } from "framer-motion";
 import { Code2, Database, Layout, Terminal, Cpu, Globe, Loader2 } from "lucide-react";
 import FadeIn from "./FadeIn";
 import MagneticTag from "./MagneticTag";
-import { db } from "../app/lib/firebase"; 
+import { portfolioData } from "@/app/data/portfolio";
+import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function Skills() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [opacity, setOpacity] = useState(0);
-  const [skillsData, setSkillsData] = useState<Record<string, string[]> | null>(null);
+  const [skillsData, setSkillsData] = useState<Record<string, string[]> | null>(portfolioData.skills);
   const [loading, setLoading] = useState(true);
 
-  // FETCH SKILLS FROM FIREBASE
   useEffect(() => {
     const fetchSkills = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "skills"));
         const data: Record<string, string[]> = {};
-        
+
         if (!querySnapshot.empty) {
             querySnapshot.forEach((doc) => {
             data[doc.id] = doc.data().items || [];
             });
             setSkillsData(data);
         } else {
-            // Fallback if DB is empty to avoid broken UI
-            console.log("No skills found in DB. Please sync via Admin.");
+            setSkillsData(portfolioData.skills);
         }
       } catch (error) {
         console.error("Error fetching skills:", error);
+        setSkillsData(portfolioData.skills);
       } finally {
         setLoading(false);
       }
@@ -82,8 +82,8 @@ export default function Skills() {
               Technical Arsenal
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-lg">
-              I don't just use tools; I choose the right technology for the problem. 
-              Here is my stack for building scalable, high-performance applications.
+              I focus on the tools that help teams ship faster and maintain quality:
+              modern frontend frameworks, backend APIs, databases, and delivery tooling.
             </p>
           </div>
         </FadeIn>
@@ -166,10 +166,10 @@ export default function Skills() {
                     </h3>
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Continuously expanding my horizon. Currently exploring:
+                    Building the next layer of market-ready depth:
                 </p>
                 <div className="flex flex-wrap gap-3">
-                    {["GraphQL", "Docker", "AWS Lambda"].map((item) => (
+                    {["Docker", "PostgreSQL", "Redis", "AI SDKs"].map((item) => (
                         <span key={item} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
                             {item}
                         </span>
