@@ -35,7 +35,15 @@ export default function Certifications() {
       try {
         const querySnapshot = await getDocs(collection(db, "certifications"));
         if (!querySnapshot.empty) {
-          const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as CertificationItem[];
+          const data = querySnapshot.docs
+            .map((doc) => doc.data())
+            .filter((item): item is CertificationItem => {
+              return (
+                typeof item.title === "string" &&
+                typeof item.issuer === "string" &&
+                typeof item.desc === "string"
+              );
+            });
           setCertifications(data);
         }
       } catch (error) {

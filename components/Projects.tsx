@@ -24,10 +24,21 @@ export default function Projects() {
         const querySnapshot = await getDocs(collection(db, "projects"));
 
         if (!querySnapshot.empty) {
-          const data = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as CloudProject[];
+          const data = querySnapshot.docs
+            .map((doc) => ({ id: doc.id, ...doc.data() }))
+            .filter((project): project is CloudProject => {
+              return (
+                typeof project.title === "string" &&
+                typeof project.desc === "string" &&
+                Array.isArray(project.tags) &&
+                typeof project.category === "string" &&
+                typeof project.spotlight === "string" &&
+                typeof project.status === "string" &&
+                Array.isArray(project.highlights) &&
+                typeof project.links === "object" &&
+                project.links !== null
+              );
+            });
           setProjects(data);
         }
       } catch (error) {
