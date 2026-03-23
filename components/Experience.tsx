@@ -32,7 +32,7 @@ export default function Experience() {
               </h2>
             </div>
             
-            <div className="flex bg-white/5 backdrop-blur-md p-1 rounded-full border border-white/10">
+            <div className="flex glass-card p-1 rounded-full">
               {["summary", "technical"].map((mode) => (
                 <button
                   key={mode}
@@ -41,7 +41,7 @@ export default function Experience() {
                     "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
                     viewMode === mode
                       ? "bg-primary text-white shadow-lg"
-                      : "text-foreground/40 hover:text-foreground/80"
+                      : "text-foreground/40 hover:text-foreground/80 hover:bg-surface-hover"
                   )}
                 >
                   {mode}
@@ -62,7 +62,7 @@ export default function Experience() {
               
               <div className="glass-card glass-card-hover p-8 md:p-12 relative overflow-hidden group">
                 {/* Decorative background logo/icon */}
-                <Briefcase className="absolute -right-8 -bottom-8 w-48 h-48 text-white/5 -rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none" />
+                <Briefcase className="absolute -right-8 -bottom-8 w-48 h-48 text-foreground/5 -rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none" />
 
                 <div className="relative z-10">
                   <div className="flex flex-col md:flex-row justify-between items-start mb-10 gap-4">
@@ -88,7 +88,7 @@ export default function Experience() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="p-6 bg-white/5 rounded-2xl border-l-4 border-primary italic text-lg text-foreground/70"
+                        className="p-6 bg-surface-hover rounded-2xl border-l-4 border-primary italic text-lg text-foreground/70"
                       >
                          &quot;{exp.description}&quot;
                       </motion.div>
@@ -102,7 +102,7 @@ export default function Experience() {
                       >
                         {exp.points.map((point, i) => (
                           <div key={i} className="flex gap-4 group/item">
-                            <div className="mt-1 w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover/item:border-primary/50 group-hover/item:bg-primary/10 transition-all duration-300">
+                            <div className="mt-1 w-8 h-8 rounded-xl bg-surface-hover border border-border flex items-center justify-center group-hover/item:border-primary/50 group-hover/item:bg-primary/10 transition-all duration-300">
                               {getCategoryIcon(point)}
                             </div>
                             <p className="text-foreground/60 leading-relaxed font-body flex-1">
@@ -118,7 +118,7 @@ export default function Experience() {
                     {exp.stack.map((tech) => (
                       <span
                         key={tech}
-                        className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-lg bg-white/5 border border-white/10 text-foreground/40 hover:text-primary hover:border-primary/40 transition-all cursor-default"
+                        className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-lg bg-surface-hover border border-border text-foreground/40 hover:text-primary hover:border-primary/40 transition-all cursor-default"
                       >
                         {tech}
                       </span>

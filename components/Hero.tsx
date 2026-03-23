@@ -16,7 +16,7 @@ export default function Hero() {
 
       <div className="container-custom relative z-10">
         <FadeIn delay={0.1}>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-primary text-sm font-medium mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-primary text-sm font-medium mb-8">
             <Sparkles size={16} className="text-accent" />
             <span className="text-foreground/80">{portfolioData.personalInfo.availability}</span>
           </div>
@@ -60,12 +60,12 @@ export default function Hero() {
                 href={portfolioData.personalInfo.resumeLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-md font-bold transition-all hover:bg-white/10 flex items-center gap-2"
+                className="group px-8 py-4 rounded-full glass-card font-bold transition-all hover:bg-surface-hover flex items-center gap-2"
               >
                 Download CV <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
               </a>
 
-              <div className="flex gap-6 pl-2 sm:pl-6 sm:border-l border-white/10">
+              <div className="flex gap-6 pl-2 sm:pl-6 sm:border-l border-border">
                 <a 
                   href={portfolioData.personalInfo.github} 
                   target="_blank" 

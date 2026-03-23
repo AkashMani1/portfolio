@@ -89,7 +89,7 @@ export default function Skills() {
                       {skills.map((skill) => (
                         <span 
                           key={skill} 
-                          className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 text-foreground/50 group-hover/bento:text-foreground transition-colors"
+                          className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-surface-hover border border-border text-foreground/50 group-hover/bento:text-foreground transition-colors"
                         >
                           {skill}
                         </span>

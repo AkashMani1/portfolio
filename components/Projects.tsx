@@ -60,7 +60,7 @@ export default function Projects() {
               </p>
             </div>
             
-            <div className="flex gap-2 p-1 bg-white/5 backdrop-blur-md rounded-full border border-white/10 self-start">
+            <div className="flex gap-2 p-1 glass-card rounded-full self-start">
               {categories.map((cat) => (
                 <button
                   key={cat}
@@ -69,7 +69,7 @@ export default function Projects() {
                     "px-6 py-2 rounded-full text-sm font-bold transition-all",
                     filter === cat
                       ? "bg-primary text-white shadow-lg"
-                      : "text-foreground/40 hover:text-foreground/80"
+                      : "text-foreground/40 hover:text-foreground/80 hover:bg-surface-hover"
                   )}
                 >
                   {cat}
@@ -84,8 +84,8 @@ export default function Projects() {
             <Loader2 className="animate-spin text-primary" size={40} />
           </div>
         ) : (
-          <BentoGrid className="max-w-none">
-            <AnimatePresence mode="popLayout">
+          <BentoGrid className="max-w-none md:auto-rows-[22rem]">
+            <AnimatePresence mode="wait">
               {filteredProjects.map((project, idx) => (
                 <BentoGridItem
                   key={project.id || project.title}
@@ -93,22 +93,24 @@ export default function Projects() {
                   description={project.desc}
                   header={
                     <div 
-                      className="h-full min-h-[6rem] rounded-xl flex items-center justify-center relative overflow-hidden group-hover/bento:scale-[1.02] transition-transform duration-500"
-                      style={{ background: `linear-gradient(135deg, ${project.spotlight || 'var(--color-primary)'}, rgba(15, 23, 42, 0.4))` }}
+                      className="h-full min-h-[8rem] rounded-xl flex items-center justify-center relative overflow-hidden group-hover/bento:scale-[1.02] transition-transform duration-500"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${project.spotlight || 'var(--color-primary)'}, var(--background))` 
+                      }}
                     >
-                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/bento:opacity-100 transition-opacity" />
+                      <div className="absolute inset-0 bg-black/10 opacity-0 group-hover/bento:opacity-100 transition-opacity" />
                       <div className="relative flex flex-col items-center">
-                        <span className="text-[10px] uppercase font-black tracking-[0.2em] border border-white/20 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full mb-2">
+                        <span className="text-[10px] uppercase font-black tracking-[0.2em] border border-white/20 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full mb-2 text-white">
                           {project.category}
                         </span>
                         <div className="flex gap-4 mt-2">
                           {project.links?.live && project.links.live !== "#" && (
-                            <a href={project.links.live} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                            <a href={project.links.live} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110 text-white">
                               <Rocket size={18} />
                             </a>
                           )}
                           {project.links?.code && project.links.code !== "#" && (
-                            <a href={project.links.code} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                            <a href={project.links.code} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110 text-white">
                               <Github size={18} />
                             </a>
                           )}

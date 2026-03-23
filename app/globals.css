@@ -6,19 +6,19 @@
 /* 2. PREMIUM DESIGN SYSTEM - SENIOR EDITION */
 @theme {
   /* Colors - Obsidian & Electric Indigo */
-  --color-background: #080809;
-  --color-foreground: #f0f0f2;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --color-primary: #6366f1;
   --color-primary-muted: rgba(99, 102, 241, 0.1);
   --color-accent: #06b6d4;
-  --color-surface: #121214;
-  --color-surface-hover: #1a1a1d;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-bright: rgba(255, 255, 255, 0.15);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-border-bright: var(--border-bright);
 
   /* Elevation Surfaces */
-  --color-card: #121214;
-  --color-card-foreground: #e5e7eb;
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
 
   /* Typography */
   --font-heading: var(--font-outfit);
@@ -26,7 +26,7 @@
   --font-mono: var(--font-jetbrains-mono);
 
   /* Glassmorphism Utilities */
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  --shadow-glass: var(--shadow-elevation);
   --backdrop-blur-glass: blur(12px);
 }
 
@@ -38,25 +38,43 @@
   --card-foreground: #e5e7eb;
   --accent: #06b6d4;
   --primary: #6366f1;
+  --surface: #121214;
+  --surface-hover: #1a1a1d;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-bright: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(18, 18, 20, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-elevation: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
 }
 
 .light {
   --background: #fafafa;
-  --foreground: #111111;
+  --foreground: #0a0a0b;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card-foreground: #1a1a1c;
   --accent: #0891b2;
   --primary: #4f46e5;
+  --surface: #ffffff;
+  --surface-hover: #f3f4f6;
+  --border: rgba(0, 0, 0, 0.05);
+  --border-bright: rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --shadow-elevation: 0 8px 16px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 /* 4. PREMIUM UTILITIES */
 @layer utilities {
   .glass-card {
-    @apply bg-surface/40 backdrop-blur-md border border-border shadow-glass transition-all duration-300;
+    background-color: var(--glass-bg);
+    backdrop-filter: var(--backdrop-blur-glass);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-elevation);
+    @apply transition-all duration-300;
   }
   
   .glass-card-hover {
-    @apply hover:bg-surface/60 hover:border-border-bright hover:shadow-primary/5 hover:-translate-y-1;
+    @apply hover:bg-surface-hover hover:border-border-bright hover:shadow-primary/5 hover:-translate-y-1;
   }
 
   .mesh-gradient {
@@ -68,7 +86,11 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-accent;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-foreground to-accent;
+  }
+
+  .modern-input {
+    @apply bg-surface-hover border border-border rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all text-foreground;
   }
 }
 

@@ -77,7 +77,7 @@ export default function Navbar() {
                     "text-[10px] uppercase font-black tracking-[0.2em] px-4 py-2 rounded-full transition-all",
                     activeSection === link.href 
                       ? "bg-primary/10 text-primary" 
-                      : "text-foreground/40 hover:text-foreground hover:bg-white/5"
+                      : "text-foreground/40 hover:text-foreground hover:bg-surface-hover"
                   )}
                 >
                   {link.name}
@@ -85,12 +85,12 @@ export default function Navbar() {
               ))}
             </div>
 
-            <div className="h-6 w-px bg-white/10" />
+            <div className="h-6 w-px bg-border" />
 
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-xl glass-card flex items-center justify-center hover:bg-primary hover:text-white transition-all"
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
@@ -101,7 +101,7 @@ export default function Navbar() {
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"
+                className="w-10 h-10 rounded-xl glass-card flex items-center justify-center"
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>

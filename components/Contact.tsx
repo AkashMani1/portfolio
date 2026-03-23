@@ -98,7 +98,7 @@ export default function Contact() {
                   <div className="space-y-6">
                     <button 
                       onClick={handleCopyEmail}
-                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-primary/50 transition-all"
+                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-surface-hover border border-border hover:border-primary/50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Mail size={20} />
@@ -116,7 +116,7 @@ export default function Contact() {
 
                     <button 
                       onClick={() => setShowScheduler(true)}
-                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/50 transition-all"
+                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-surface-hover border border-border hover:border-accent/50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Calendar size={20} />
@@ -141,7 +141,7 @@ export default function Contact() {
                         href={Item.href}
                         target="_blank" 
                         rel="noreferrer"
-                        className="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 text-foreground/60 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-500 hover:scale-110"
+                        className="w-14 h-14 rounded-2xl bg-surface-hover border border-border text-foreground/60 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-500 hover:scale-110"
                       >
                         <Item.icon size={24} />
                       </a>
@@ -206,18 +206,18 @@ export default function Contact() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowScheduler(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-5xl h-[85vh] bg-background rounded-3xl overflow-hidden border border-white/10 shadow-3xl"
+              className="relative w-full max-w-5xl h-[85vh] bg-background rounded-3xl overflow-hidden border border-border shadow-3xl"
             >
               <button 
                 onClick={() => setShowScheduler(false)}
-                className="absolute top-6 right-6 z-10 p-3 bg-white/5 rounded-full hover:bg-red-500 hover:text-white transition-all ring-1 ring-white/10"
+                className="absolute top-6 right-6 z-10 p-3 bg-surface-hover rounded-full hover:bg-red-500 hover:text-white transition-all ring-1 ring-border"
               >
                 <X size={20} />
               </button>
