@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"; // Import Viewport
-import { Inter } from "next/font/google";
+import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -14,8 +14,11 @@ import { Analytics } from "@vercel/analytics/react";
 import { CommandMenu } from "@/components/CommandMenu";
 import PersonalChatbot from "@/components/PersonalChatbot";
 import PageViews from "@/components/PageViews"; 
+import PageTransition from "@/components/PageTransition";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
   title: "Akash Mani | Full-Stack Developer",
@@ -42,7 +45,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}>
+      <body className={`${inter.variable} ${outfit.variable} ${jetbrainsMono.variable} font-body antialiased bg-background text-foreground overflow-x-hidden`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SmoothScroll />
           <ParticleBackground />
@@ -58,7 +61,9 @@ export default function RootLayout({
 
           <Navbar />
           <main className="min-h-screen flex flex-col relative z-10 overflow-x-hidden">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
           <Footer />
         </ThemeProvider>

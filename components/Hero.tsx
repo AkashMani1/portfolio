@@ -3,6 +3,7 @@ import { ArrowRight, Download, Github, Linkedin, Sparkles } from "lucide-react";
 import { portfolioData } from "../app/data/portfolio";
 import FadeIn from "./FadeIn";
 import Typewriter from "./Typewriter";
+import Parallax from "./Parallax";
 
 export default function Hero() {
   return (
@@ -15,11 +16,11 @@ export default function Hero() {
       </FadeIn>
 
       <FadeIn delay={0.2}>
-        <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+        <h1 className="text-4xl md:text-7xl font-heading font-bold leading-tight mb-6 tracking-tight">
           Hi, I&apos;m{" "}
           <span className="text-primary">{portfolioData.personalInfo.name}</span>
           . <br />
-          <span className="text-3xl md:text-5xl mt-2 block min-h-[1.2em] text-gray-800 dark:text-gray-100">
+          <span className="text-3xl md:text-5xl mt-2 block min-h-[1.2em] text-gray-800 dark:text-gray-100 font-body">
             I am a <Typewriter />
           </span>
         </h1>
@@ -32,18 +33,20 @@ export default function Hero() {
       </FadeIn>
 
       <FadeIn delay={0.35}>
-        <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mb-10">
-          {portfolioData.heroStats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-5 py-4 backdrop-blur-sm"
-            >
-              <p className="text-xs uppercase tracking-[0.2em] text-gray-500 mb-2">{stat.label}</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{stat.note}</p>
-            </div>
-          ))}
-        </div>
+        <Parallax offset={30}>
+          <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mb-10">
+            {portfolioData.heroStats.map((stat) => (
+              <div
+                key={stat.label}
+                className="rounded-2xl border border-white/10 bg-surface-1/50 px-5 py-4 backdrop-blur-md shadow-sm border-white/5"
+              >
+                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2">{stat.label}</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white font-heading">{stat.value}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-body">{stat.note}</p>
+              </div>
+            ))}
+          </div>
+        </Parallax>
       </FadeIn>
 
       <FadeIn delay={0.4} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">

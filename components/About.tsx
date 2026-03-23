@@ -11,7 +11,7 @@ export default function About() {
     <section id="about" className="py-24 relative">
       <div className="container-custom">
         <FadeIn>
-          <h2 className="text-3xl font-bold mb-10 text-gray-900 dark:text-white">
+          <h2 className="text-3xl font-bold mb-10 text-gray-900 dark:text-white font-heading tracking-tight">
             About Me
           </h2>
         </FadeIn>
@@ -29,9 +29,9 @@ export default function About() {
             <motion.div
               whileHover={{ y: -5 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="bg-white/80 dark:bg-white/5 p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-white/10 h-full backdrop-blur-md cursor-default"
+              className="bg-surface-1/50 p-8 rounded-2xl shadow-sm border border-white/5 h-full backdrop-blur-md cursor-default"
             >
-              <h3 className="font-bold text-lg mb-6 flex items-center gap-2 text-gray-900 dark:text-white">
+              <h3 className="font-bold text-lg mb-6 flex items-center gap-2 text-gray-900 dark:text-white font-heading">
                 <span className="w-1 h-6 bg-primary rounded-full"></span>
                 Current Focus
               </h3>
@@ -52,7 +52,7 @@ export default function About() {
         </div>
 
         <FadeIn>
-          <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-gray-900 dark:text-white">
+          <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-gray-900 dark:text-white font-heading">
             <span className="text-primary text-3xl">🎓</span> Education
           </h3>
         </FadeIn>
@@ -61,8 +61,8 @@ export default function About() {
           {portfolioData.education.map((edu, idx) => (
             <FadeIn key={idx} delay={idx * 0.1}>
               <motion.div
-                whileHover={{ x: 10, backgroundColor: "rgba(59, 130, 246, 0.05)" }}
-                className="group flex flex-col md:flex-row md:items-start justify-between p-6 rounded-2xl border border-gray-100 dark:border-white/5 bg-white/50 dark:bg-white/5 backdrop-blur-sm transition-colors cursor-default"
+                whileHover={{ x: 10, backgroundColor: "var(--color-surface-2)" }}
+                className="group flex flex-col md:flex-row md:items-start justify-between p-6 rounded-2xl border border-white/5 bg-surface-1/30 backdrop-blur-sm transition-colors cursor-default"
               >
                 <div className="flex gap-5">
                   <div className="mt-1 p-3 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors">

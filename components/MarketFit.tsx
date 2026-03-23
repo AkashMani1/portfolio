@@ -12,10 +12,10 @@ export default function MarketFit() {
       <div className="container-custom">
         <FadeIn>
           <div className="max-w-3xl mb-12">
-            <span className="text-primary font-mono text-xs tracking-[0.25em] uppercase block mb-3">
+            <span className="text-primary font-mono text-[10px] tracking-[0.25em] uppercase block mb-3 font-bold">
               Market Fit
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-heading tracking-tight">
               What I bring to a modern full-stack team
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -31,11 +31,11 @@ export default function MarketFit() {
 
             return (
               <FadeIn key={item.title} delay={index * 0.1}>
-                <div className="h-full rounded-3xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-sm p-7 shadow-sm">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+                <div className="h-full rounded-3xl border border-white/5 bg-surface-1/50 backdrop-blur-md p-8 shadow-sm group hover:border-primary/20 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                     <Icon size={22} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{item.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 font-heading tracking-tight">{item.title}</h3>
                   <p className="text-sm leading-7 text-gray-600 dark:text-gray-400">{item.desc}</p>
                 </div>
               </FadeIn>

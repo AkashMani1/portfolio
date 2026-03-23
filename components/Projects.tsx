@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github, PlayCircle, Loader2 } from "lucide-react";
 import FadeIn from "./FadeIn";
 import TiltCard from "./TiltCard";
+import Parallax from "./Parallax";
 import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { portfolioData, ProjectItem } from "@/app/data/portfolio";
@@ -119,8 +120,9 @@ export default function Projects() {
                   key={project.id || project.title}
                   data-glow={getGlowColor(project.category)}
                 >
-                  <TiltCard className="h-full">
-                    <div className="group h-full bg-white dark:bg-card/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all flex flex-col cursor-pointer">
+                  <Parallax offset={idx % 2 === 0 ? 20 : 40}>
+                    <TiltCard className="h-full">
+                      <div className="group h-full bg-surface-1/40 backdrop-blur-md rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 shadow-sm transition-all flex flex-col cursor-pointer">
                       <div
                         className="h-48 flex items-end relative overflow-hidden p-6"
                         style={{ background: `linear-gradient(135deg, ${project.spotlight}, rgba(15, 23, 42, 0.04))` }}
@@ -138,7 +140,7 @@ export default function Projects() {
 
                       <div className="p-6 flex flex-col flex-grow">
                         <div className="flex justify-between items-start mb-3">
-                          <h3 className="font-bold text-xl group-hover:text-primary transition-colors text-gray-900 dark:text-white">
+                          <h3 className="font-bold text-xl group-hover:text-primary transition-colors text-gray-900 dark:text-white font-heading tracking-tight">
                             {project.title}
                           </h3>
                         </div>
@@ -157,7 +159,7 @@ export default function Projects() {
 
                         <div className="flex flex-wrap gap-2 mb-6">
                           {project.tags?.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-xs px-2.5 py-1 rounded-md bg-gray-100 dark:bg-white/10 font-medium text-gray-600 dark:text-gray-300">
+                            <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/10 font-bold uppercase tracking-wider text-gray-400">
                               {tag}
                             </span>
                           ))}
@@ -181,8 +183,9 @@ export default function Projects() {
                           )}
                         </div>
                       </div>
-                    </div>
-                  </TiltCard>
+                      </div>
+                    </TiltCard>
+                  </Parallax>
                 </motion.div>
               ))}
             </AnimatePresence>

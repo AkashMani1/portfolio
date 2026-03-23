@@ -56,7 +56,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-white/10 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-lg">
+      <nav className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/70 backdrop-blur-xl">
         <div className="container-custom flex h-16 items-center justify-between">
           {/* Logo - CHANGED TO GEAR ICON */}
           <Link href="/" className="text-2xl font-bold tracking-tighter z-50 relative text-primary hover:rotate-90 transition-transform duration-500" aria-label="Home">
@@ -69,8 +69,8 @@ export default function Navbar() {
               <Magnetic key={link.name}>
                 <Link
                   href={link.href}
-                  className={`relative text-sm font-medium transition-colors px-2 py-1 ${
-                    activeSection === link.href ? "text-primary" : "text-gray-600 dark:text-gray-400 hover:text-primary"
+                  className={`relative text-[11px] uppercase font-bold tracking-wider transition-colors px-2 py-1 font-heading ${
+                    activeSection === link.href ? "text-primary" : "text-gray-500 hover:text-primary"
                   }`}
                 >
                   {link.name}

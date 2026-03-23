@@ -61,7 +61,7 @@ export default function Certifications() {
     <section id="certifications" className="py-24 container-custom">
       <FadeIn>
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight font-heading">
             Certifications & Simulations
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
@@ -81,11 +81,11 @@ export default function Certifications() {
               <motion.div
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                className="relative p-6 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-sm h-full"
+                className="relative p-7 rounded-3xl border border-white/5 bg-surface-1/40 backdrop-blur-md h-full shadow-sm"
               >
-                <Award size={36} className="text-yellow-500 mb-4" />
-                <h3 className="text-xl font-bold mb-2">{cert.title}</h3>
-                <p className="text-sm text-primary font-medium">{cert.issuer}</p>
+                <Award size={36} className="text-yellow-500/80 mb-4" />
+                <h3 className="text-xl font-bold mb-2 font-heading tracking-tight">{cert.title}</h3>
+                <p className="text-xs text-primary font-bold uppercase tracking-wider">{cert.issuer}</p>
                 <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">
                   {cert.desc}
                 </p>
@@ -103,7 +103,7 @@ export default function Certifications() {
               <motion.div
                 whileHover={{ y: -8 }}
                 transition={{ type: "spring", stiffness: 300 }}
-                className="relative p-6 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-sm h-full"
+                className="relative p-7 rounded-3xl border border-white/5 bg-surface-1/40 backdrop-blur-md h-full shadow-sm"
               >
                 <sim.icon size={36} className="text-primary mb-4" />
                 <span className="absolute top-6 right-6 text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">

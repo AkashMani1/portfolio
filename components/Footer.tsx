@@ -38,7 +38,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="py-12 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-[#0a0a0a]">
+    <footer className="py-12 border-t border-white/5 bg-background">
       <div className="container-custom flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
         
         <div className="text-center md:text-left">

@@ -5,15 +5,22 @@ type Props = {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  y?: number;
 };
 
-export default function FadeIn({ children, delay = 0, className = "" }: Props) {
+const springConfig = { type: "spring", stiffness: 300, damping: 30 };
+
+export default function FadeIn({ children, delay = 0, className = "", y = 20 }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }} // Start slightly below and invisible
-      whileInView={{ opacity: 1, y: 0 }} // Animate to final position
-      viewport={{ once: true, margin: "-50px" }} // Trigger when 50px of item is visible
-      transition={{ duration: 0.6, delay: delay, ease: "easeOut" }} // Smooth easing
+      initial={{ opacity: 0, y: y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ 
+        delay: delay,
+        y: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
+      }}
       className={className}
     >
       {children}

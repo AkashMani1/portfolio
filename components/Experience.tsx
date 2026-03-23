@@ -25,8 +25,8 @@ export default function Experience() {
       <FadeIn>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div>
-            <span className="text-primary font-mono text-xs tracking-widest uppercase mb-2 block">Career Path</span>
-            <h2 className="text-4xl md:text-5xl font-bold flex items-center gap-3 text-gray-900 dark:text-white">
+            <span className="text-primary font-mono text-[10px] tracking-widest uppercase mb-2 block font-bold">Career Path</span>
+            <h2 className="text-4xl md:text-5xl font-bold flex items-center gap-3 text-gray-900 dark:text-white font-heading tracking-tight">
               Professional Experience
             </h2>
           </div>
@@ -68,18 +68,18 @@ export default function Experience() {
           <FadeIn key={idx} delay={idx * 0.1}>
             <div className="relative pl-8 md:pl-16 group">
               {/* Timeline Dot positioned for mobile compatibility */}
-              <div className="absolute left-[18px] md:left-[44px] top-8 w-3 h-3 rounded-full bg-gray-900 dark:bg-white ring-4 ring-gray-100 dark:ring-black z-10 group-hover:scale-125 group-hover:bg-primary group-hover:ring-primary/20 transition-all duration-300"></div>
+              <div className="absolute left-[18px] md:left-[44px] top-8 w-3 h-3 rounded-full bg-primary ring-4 ring-primary/10 z-10 group-hover:scale-125 transition-all duration-300"></div>
 
               <motion.div
                 layout
-                className="relative p-6 md:p-8 rounded-3xl border border-gray-200 dark:border-white/10 bg-white/50 dark:bg-white/5 backdrop-blur-lg overflow-hidden transition-all hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5"
+                className="relative p-6 md:p-8 rounded-3xl border border-white/5 bg-surface-1/30 backdrop-blur-xl overflow-hidden transition-all hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 <div className="relative z-10">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline mb-8 gap-2">
                         <div>
-                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 font-heading tracking-tight">
                             {exp.role}
                             </h3>
                             <div className="flex flex-wrap items-center gap-2 text-base md:text-lg">

@@ -78,7 +78,7 @@ export default function Skills() {
       <div className="container-custom">
         <FadeIn>
           <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white font-heading tracking-tight">
               Technical Arsenal
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-lg">
@@ -103,7 +103,7 @@ export default function Skills() {
                 className="pointer-events-none absolute -inset-px transition-opacity duration-300 rounded-3xl z-0"
                 style={{
                 opacity,
-                background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(59, 130, 246, 0.15), transparent 40%)`
+                background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(79, 70, 229, 0.15), transparent 40%)`
                 }}
             />
 
@@ -121,7 +121,7 @@ export default function Skills() {
                 <motion.div 
                     whileHover={{ y: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
-                    className="relative h-full bg-gray-50/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-3xl p-8 overflow-hidden group hover:border-primary/20 transition-colors"
+                    className="relative h-full bg-surface-1/40 border border-white/5 rounded-3xl p-8 overflow-hidden group hover:border-primary/20 transition-colors backdrop-blur-md"
                 >
                     <div 
                     className="absolute -inset-px bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
@@ -137,10 +137,10 @@ export default function Skills() {
                         </h3>
                     </div>
 
-                    <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-3">
                         {skills.map((skill) => (
                         <MagneticTag key={skill}>
-                            <span className="inline-block px-4 py-2 rounded-xl text-sm font-medium bg-white dark:bg-black/40 border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:text-primary hover:border-primary/50 transition-colors cursor-default shadow-sm hover:shadow-md">
+                            <span className="inline-block px-4 py-2 rounded-xl text-[11px] uppercase tracking-wider font-bold bg-white/5 border border-white/5 text-gray-400 hover:text-primary hover:border-primary/50 transition-colors cursor-default shadow-sm backdrop-blur-sm">
                             {skill}
                             </span>
                         </MagneticTag>

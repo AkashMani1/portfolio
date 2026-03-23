@@ -85,8 +85,8 @@ export default function Contact() {
       <div className="container-custom max-w-5xl">
         <FadeIn>
           <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 dark:text-white">
-              Let's work together.
+            <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 dark:text-white font-heading">
+              Let&apos;s work together.
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Currently open for <span className="text-primary font-medium">internships</span> and new opportunities. 
@@ -105,7 +105,7 @@ export default function Contact() {
                 
                 <button
                   onClick={handleCopyEmail}
-                  className="group relative w-full text-left p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/50 transition-all shadow-sm hover:shadow-md overflow-hidden"
+                  className="group relative w-full text-left p-5 rounded-2xl bg-surface-1/50 border border-white/5 hover:border-primary/50 transition-all shadow-sm overflow-hidden backdrop-blur-md"
                 >
                   <div className="relative z-10 flex items-center justify-between">
                     <div>
@@ -163,7 +163,7 @@ export default function Contact() {
           {/* RIGHT: Validated Form */}
           <div className="md:col-span-3">
             <FadeIn delay={0.4}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white/50 dark:bg-white/5 p-8 rounded-3xl border border-gray-100 dark:border-white/5 backdrop-blur-sm">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-surface-1/50 p-8 rounded-3xl border border-white/5 backdrop-blur-md">
                 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -217,7 +217,7 @@ export default function Contact() {
                   whileTap={{ scale: 0.98 }}
                   disabled={isSubmitting}
                   type="submit"
-                  className="w-full bg-gray-900 dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary dark:hover:bg-primary hover:text-white transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary-dark transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
                 >
                   {isSubmitting ? (
                     <>Sending <Loader2 className="animate-spin" size={18} /></>

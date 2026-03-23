@@ -5,29 +5,52 @@
 
 /* 2. DEFINE YOUR THEME DIRECTLY HERE */
 @theme {
-  --color-primary: #3b82f6;
+  --color-primary-light: #6366f1;
+  --color-primary: #4f46e5;
+  --color-primary-dark: #4338ca;
+  --color-accent: #f43f5e;
   
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
 
-  --font-sans: var(--font-inter);
+  /* Elevation Surfaces */
+  --color-surface-1: #161618;
+  --color-surface-2: #1c1c1e;
+
+  /* Typography */
+  --font-heading: var(--font-outfit);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+
+  /* Spacing - Base 8 system */
+  --spacing-base: 8px;
+  --spacing-1: calc(1 * var(--spacing-base));
+  --spacing-2: calc(2 * var(--spacing-base));
+  --spacing-3: calc(3 * var(--spacing-base));
+  --spacing-4: calc(4 * var(--spacing-base));
+  --spacing-6: calc(6 * var(--spacing-base));
+  --spacing-8: calc(8 * var(--spacing-base));
+  --spacing-12: calc(12 * var(--spacing-base));
+  --spacing-16: calc(16 * var(--spacing-base));
 }
 
-/* 3. DEFINE THE COLOR VARIABLES */
+/* 3. DEFINE THE COLOR VARIABLES - NEXUS EDITION (Dark Default) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --card: #f3f4f6;
-  --card-foreground: #1f2937;
+  --background: #0a0a0b; 
+  --foreground: #f9fafb;
+  --card: #161618;
+  --card-foreground: #f3f4f6;
+  --accent: #f43f5e;
 }
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --card: #171717;
-  --card-foreground: #e5e5e5;
+/* Light mode overrides if needed */
+.light {
+  --background: #fdfdfd;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #374151;
 }
 
 /* 4. APPLY DEFAULTS */
