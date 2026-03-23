@@ -2,80 +2,91 @@
 import { ArrowRight, Download, Github, Linkedin, Sparkles } from "lucide-react";
 import { portfolioData } from "../app/data/portfolio";
 import FadeIn from "./FadeIn";
-import Typewriter from "./Typewriter";
-import Parallax from "./Parallax";
+import { motion } from "framer-motion";
+import { cn } from "@/app/lib/utils";
 
 export default function Hero() {
   return (
-    <section className="pt-32 pb-16 md:pt-48 md:pb-32 container-custom flex flex-col justify-center min-h-[80vh]">
-      <FadeIn delay={0.1}>
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-medium mb-4">
-          <Sparkles size={16} />
-          {portfolioData.personalInfo.availability}
-        </div>
-      </FadeIn>
+    <section className="relative pt-40 pb-20 md:pt-64 md:pb-40 overflow-hidden mesh-gradient">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-40">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]" />
+        <div className="absolute bottom-[20%] right-[-5%] w-[30%] h-[30%] rounded-full bg-accent/20 blur-[100px]" />
+      </div>
 
-      <FadeIn delay={0.2}>
-        <h1 className="text-4xl md:text-7xl font-heading font-bold leading-tight mb-6 tracking-tight">
-          Hi, I&apos;m{" "}
-          <span className="text-primary">{portfolioData.personalInfo.name}</span>
-          . <br />
-          <span className="text-3xl md:text-5xl mt-2 block min-h-[1.2em] text-gray-800 dark:text-gray-100 font-body">
-            I am a <Typewriter />
-          </span>
-        </h1>
-      </FadeIn>
-
-      <FadeIn delay={0.3}>
-        <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mb-8 leading-relaxed">
-          {portfolioData.personalInfo.tagline}
-        </p>
-      </FadeIn>
-
-      <FadeIn delay={0.35}>
-        <Parallax offset={30}>
-          <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mb-10">
-            {portfolioData.heroStats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-2xl border border-white/10 bg-surface-1/50 px-5 py-4 backdrop-blur-md shadow-sm border-white/5"
-              >
-                <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-gray-500 mb-2">{stat.label}</p>
-                <p className="text-xl font-bold text-gray-900 dark:text-white font-heading">{stat.value}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 font-body">{stat.note}</p>
-              </div>
-            ))}
+      <div className="container-custom relative z-10">
+        <FadeIn delay={0.1}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-primary text-sm font-medium mb-8">
+            <Sparkles size={16} className="text-accent" />
+            <span className="text-foreground/80">{portfolioData.personalInfo.availability}</span>
           </div>
-        </Parallax>
-      </FadeIn>
+        </FadeIn>
 
-      <FadeIn delay={0.4} className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        <div className="flex gap-4">
-          <a
-            href="#projects"
-            className="bg-primary text-white px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-blue-600 transition-all hover:scale-105 active:scale-95"
-          >
-            View Projects <ArrowRight size={18} />
-          </a>
-          <a
-            href={portfolioData.personalInfo.resumeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-gray-300 dark:border-gray-700 px-6 py-3 rounded-full font-medium flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all hover:scale-105 active:scale-95"
-          >
-            Download CV <Download size={18} />
-          </a>
-        </div>
+        <div className="max-w-4xl">
+          <FadeIn delay={0.2}>
+            <h1 className="text-5xl md:text-8xl font-heading font-black leading-[1.1] mb-8 tracking-tighter">
+              Crafting <span className="text-gradient">Digital</span> <br />
+              <span className="flex items-center gap-4">
+                Experiences
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: "120px" }}
+                  transition={{ duration: 0.8, delay: 1 }}
+                  className="hidden md:block h-[4px] bg-gradient-to-r from-primary to-accent rounded-full"
+                />
+              </span>
+            </h1>
+          </FadeIn>
 
-        <div className="flex gap-6 text-gray-500 dark:text-gray-400 mt-4 sm:mt-0 sm:ml-6">
-          <a href={portfolioData.personalInfo.github} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:scale-110">
-            <Github size={24} />
-          </a>
-          <a href={portfolioData.personalInfo.linkedin} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors hover:scale-110">
-            <Linkedin size={24} />
-          </a>
+          <FadeIn delay={0.3}>
+            <p className="text-xl md:text-2xl text-foreground/60 max-w-2xl mb-12 leading-relaxed font-body">
+              {portfolioData.personalInfo.tagline}
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.4}>
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+              <a
+                href="#projects"
+                className="group relative px-8 py-4 rounded-full font-bold text-white overflow-hidden transition-all hover:shadow-[0_0_40px_rgba(99,102,241,0.4)]"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 transition-transform group-hover:scale-105" />
+                <span className="relative flex items-center gap-2">
+                  Explore Work <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </span>
+              </a>
+              
+              <a
+                href={portfolioData.personalInfo.resumeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-md font-bold transition-all hover:bg-white/10 flex items-center gap-2"
+              >
+                Download CV <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
+              </a>
+
+              <div className="flex gap-6 pl-2 sm:pl-6 sm:border-l border-white/10">
+                <a 
+                  href={portfolioData.personalInfo.github} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="text-foreground/40 hover:text-primary transition-all hover:scale-125"
+                >
+                  <Github size={28} />
+                </a>
+                <a 
+                  href={portfolioData.personalInfo.linkedin} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="text-foreground/40 hover:text-primary transition-all hover:scale-125"
+                >
+                  <Linkedin size={28} />
+                </a>
+              </div>
+            </div>
+          </FadeIn>
         </div>
-      </FadeIn>
+      </div>
     </section>
   );
 }

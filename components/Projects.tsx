@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Github, PlayCircle, Loader2 } from "lucide-react";
+import { ExternalLink, Github, PlayCircle, Loader2, Code2, Rocket, Layout } from "lucide-react";
 import FadeIn from "./FadeIn";
-import TiltCard from "./TiltCard";
-import Parallax from "./Parallax";
 import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { portfolioData, ProjectItem } from "@/app/data/portfolio";
+import { BentoGrid, BentoGridItem } from "./ui/BentoGrid";
+import { cn } from "@/app/lib/utils";
 
 const categories = ["All", "Web", "Mobile", "Others"];
 
@@ -23,29 +23,10 @@ export default function Projects() {
     const fetchProjects = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "projects"));
-
         if (!querySnapshot.empty) {
           const data = querySnapshot.docs.reduce<CloudProject[]>((acc, doc) => {
-            const project: Record<string, unknown> & { id: string } = {
-              id: doc.id,
-              ...doc.data(),
-            };
-
-            const isValidProject =
-              typeof project.title === "string" &&
-              typeof project.desc === "string" &&
-              Array.isArray(project.tags) &&
-              typeof project.category === "string" &&
-              typeof project.spotlight === "string" &&
-              typeof project.status === "string" &&
-              Array.isArray(project.highlights) &&
-              typeof project.links === "object" &&
-              project.links !== null;
-
-            if (isValidProject) {
-              acc.push(project as CloudProject);
-            }
-
+            const project = { id: doc.id, ...doc.data() } as any;
+            acc.push(project);
             return acc;
           }, []);
           setProjects(data);
@@ -57,7 +38,6 @@ export default function Projects() {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
@@ -65,131 +45,87 @@ export default function Projects() {
     (project) => filter === "All" || project.category === filter
   );
 
-  const hasRealLink = (href?: string) => Boolean(href && href !== "#");
-
-  const getGlowColor = (category: string) => {
-    if (category === "Web") return "rgba(59, 130, 246, 0.08)";
-    if (category === "Mobile") return "rgba(16, 185, 129, 0.08)";
-    if (category === "Others") return "rgba(249, 115, 22, 0.08)";
-    return "rgba(59, 130, 246, 0.08)";
-  };
-
   return (
-    <section id="projects" className="py-20">
+    <section id="projects" className="py-24 relative overflow-hidden">
       <div className="container-custom">
-        <FadeIn>
-          <h2 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Featured Projects</h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mb-8 text-lg">
-            These projects show the direction of my work: full-stack execution, product thinking,
-            and stronger backend ownership instead of frontend-only demos.
-          </p>
-
-          <div className="flex gap-2 mb-10 overflow-x-auto pb-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setFilter(cat)}
-                data-glow="rgba(168, 85, 247, 0.08)"
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                  filter === cat
-                    ? "bg-primary text-white shadow-md"
-                    : "bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary text-gray-600 dark:text-gray-300"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+        <FadeIn className="mb-16">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 tracking-tight">
+                Featured <span className="text-gradient">Creations</span>
+              </h2>
+              <p className="text-foreground/60 text-lg leading-relaxed">
+                A selection of digital products built with a focus on core architecture, 
+                scalability, and production-ready implementation.
+              </p>
+            </div>
+            
+            <div className="flex gap-2 p-1 bg-white/5 backdrop-blur-md rounded-full border border-white/10 self-start">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={cn(
+                    "px-6 py-2 rounded-full text-sm font-bold transition-all",
+                    filter === cat
+                      ? "bg-primary text-white shadow-lg"
+                      : "text-foreground/40 hover:text-foreground/80"
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
         </FadeIn>
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-primary" size={32} />
+            <Loader2 className="animate-spin text-primary" size={40} />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <BentoGrid className="max-w-none">
             <AnimatePresence mode="popLayout">
               {filteredProjects.map((project, idx) => (
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: idx * 0.1 }}
-                  whileHover={{ y: -10 }}
+                <BentoGridItem
                   key={project.id || project.title}
-                  data-glow={getGlowColor(project.category)}
-                >
-                  <Parallax offset={idx % 2 === 0 ? 20 : 40}>
-                    <TiltCard className="h-full">
-                      <div className="group h-full bg-surface-1/40 backdrop-blur-md rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 shadow-sm transition-all flex flex-col cursor-pointer">
-                      <div
-                        className="h-48 flex items-end relative overflow-hidden p-6"
-                        style={{ background: `linear-gradient(135deg, ${project.spotlight}, rgba(15, 23, 42, 0.04))` }}
-                      >
-                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="relative">
-                          <span className="inline-flex text-[11px] font-bold tracking-[0.2em] uppercase border border-gray-300 dark:border-gray-700 px-3 py-1 rounded-full text-gray-600 dark:text-gray-300 mb-3">
-                            {project.category}
-                          </span>
-                          <p className="text-sm font-medium text-gray-700 dark:text-gray-200 max-w-[14rem]">
-                            {project.status}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="p-6 flex flex-col flex-grow">
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="font-bold text-xl group-hover:text-primary transition-colors text-gray-900 dark:text-white font-heading tracking-tight">
-                            {project.title}
-                          </h3>
-                        </div>
-
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed">
-                          {project.desc}
-                        </p>
-
-                        <div className="space-y-2 mb-6 flex-grow">
-                          {project.highlights?.slice(0, 2).map((highlight) => (
-                            <p key={highlight} className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                              {highlight}
-                            </p>
-                          ))}
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {project.tags?.slice(0, 3).map((tag) => (
-                            <span key={tag} className="text-[10px] px-2.5 py-1 rounded-md bg-white/5 border border-white/10 font-bold uppercase tracking-wider text-gray-400">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-
-                        <div className="flex gap-4 mt-auto border-t border-gray-100 dark:border-gray-800 pt-4">
-                          {hasRealLink(project.links?.live) && (
-                            <a href={project.links?.live} target="_blank" rel="noreferrer" className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors text-gray-500 dark:text-gray-400">
-                              <ExternalLink size={14} className="mr-1.5" /> Live
+                  title={project.title}
+                  description={project.desc}
+                  header={
+                    <div 
+                      className="h-full min-h-[6rem] rounded-xl flex items-center justify-center relative overflow-hidden group-hover/bento:scale-[1.02] transition-transform duration-500"
+                      style={{ background: `linear-gradient(135deg, ${project.spotlight || 'var(--color-primary)'}, rgba(15, 23, 42, 0.4))` }}
+                    >
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/bento:opacity-100 transition-opacity" />
+                      <div className="relative flex flex-col items-center">
+                        <span className="text-[10px] uppercase font-black tracking-[0.2em] border border-white/20 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full mb-2">
+                          {project.category}
+                        </span>
+                        <div className="flex gap-4 mt-2">
+                          {project.links?.live && project.links.live !== "#" && (
+                            <a href={project.links.live} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                              <Rocket size={18} />
                             </a>
                           )}
-                          {hasRealLink(project.links?.code) && (
-                            <a href={project.links?.code} target="_blank" rel="noreferrer" className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-primary transition-colors text-gray-500 dark:text-gray-400">
-                              <Github size={14} className="mr-1.5" /> Code
-                            </a>
-                          )}
-                          {project.video_url && (
-                            <a href={project.video_url} target="_blank" rel="noreferrer" className="flex items-center text-xs font-bold uppercase tracking-wider hover:text-red-500 transition-colors text-gray-500 dark:text-gray-400 ml-auto">
-                              <PlayCircle size={14} className="mr-1.5" /> Demo
+                          {project.links?.code && project.links.code !== "#" && (
+                            <a href={project.links.code} target="_blank" rel="noreferrer" className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                              <Github size={18} />
                             </a>
                           )}
                         </div>
                       </div>
-                      </div>
-                    </TiltCard>
-                  </Parallax>
-                </motion.div>
+                    </div>
+                  }
+                  icon={<Code2 className="text-primary" size={20} />}
+                  className={cn(
+                    idx % 4 === 0 || idx % 4 === 3 ? "md:col-span-2" : "md:col-span-1",
+                    "min-h-[22rem]"
+                  )}
+                  delay={idx * 0.05}
+                />
               ))}
             </AnimatePresence>
-          </div>
+          </BentoGrid>
         )}
       </div>
     </section>

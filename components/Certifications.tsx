@@ -1,18 +1,18 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Award, Code, GraduationCap, ExternalLink, Loader2 } from "lucide-react";
 import FadeIn from "./FadeIn";
 import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { portfolioData, CertificationItem } from "@/app/data/portfolio";
+import { cn } from "@/app/lib/utils";
 
 const simulationData = [
   {
     title: "JPMorgan Software Engineering",
     type: "Job Simulation",
     issuer: "Forage",
-    desc: "Implemented a Spring Boot project with Kafka and H2 database. Gained exposure to large-scale financial system architecture and API design.",
+    desc: "Implemented a Spring Boot project with Kafka and H2 database. Gained exposure to large-scale financial system architecture.",
     icon: GraduationCap,
     link: "#"
   },
@@ -20,7 +20,7 @@ const simulationData = [
     title: "Deloitte Technology Simulation",
     type: "Job Simulation",
     issuer: "Forage",
-    desc: "Solved real-world business problems using technology-focused approaches. Applied software engineering principles to create scalable solutions.",
+    desc: "Solved real-world business problems using technology-focused approaches. Applied software engineering principles.",
     icon: Code,
     link: "#"
   },
@@ -48,83 +48,87 @@ export default function Certifications() {
         }
       } catch (error) {
         console.error("Error fetching certifications:", error);
-        setCertifications(portfolioData.certifications);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCertifications();
   }, []);
 
   return (
-    <section id="certifications" className="py-24 container-custom">
-      <FadeIn>
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white tracking-tight font-heading">
-            Certifications & Simulations
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
-            Proof of capability through structured training and virtual work experience.
-          </p>
-        </div>
-      </FadeIn>
+    <section id="certifications" className="py-24 relative overflow-hidden">
+      <div className="container-custom">
+        <FadeIn className="mb-16">
+          <div className="max-w-3xl">
+            <span className="text-primary font-black text-[10px] tracking-[0.4em] uppercase block mb-4">
+              Credentials
+            </span>
+            <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 tracking-tight">
+              Validated <span className="text-gradient">Expertise</span>
+            </h2>
+            <p className="text-lg text-foreground/60 leading-relaxed font-body">
+              Proof of capability through structured training and vertical market 
+              simulations from world-class organizations.
+            </p>
+          </div>
+        </FadeIn>
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="animate-spin text-primary" size={32} />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {certifications.map((cert, idx) => (
-            <FadeIn key={`${cert.title}-${idx}`} delay={idx * 0.1}>
-              <motion.div
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="relative p-7 rounded-3xl border border-white/5 bg-surface-1/40 backdrop-blur-md h-full shadow-sm"
-              >
-                <Award size={36} className="text-yellow-500/80 mb-4" />
-                <h3 className="text-xl font-bold mb-2 font-heading tracking-tight">{cert.title}</h3>
-                <p className="text-xs text-primary font-bold uppercase tracking-wider">{cert.issuer}</p>
-                <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">
-                  {cert.desc}
-                </p>
-                {cert.link && cert.link !== "#" && (
-                  <a href={cert.link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
-                    View Certificate <ExternalLink size={14} />
-                  </a>
-                )}
-              </motion.div>
-            </FadeIn>
-          ))}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-primary" size={40} />
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {certifications.map((cert, idx) => (
+              <FadeIn key={idx} delay={idx * 0.05}>
+                <div className="glass-card glass-card-hover p-8 group h-full flex flex-col">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Award size={24} />
+                  </div>
+                  <h3 className="text-xl font-heading font-black mb-2 tracking-tight group-hover:text-primary transition-colors">
+                    {cert.title}
+                  </h3>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">
+                    {cert.issuer}
+                  </div>
+                  <p className="text-foreground/50 text-sm leading-relaxed mb-6 flex-1 italic">
+                    &quot;{cert.desc}&quot;
+                  </p>
+                  {cert.link && cert.link !== "#" && (
+                    <a 
+                      href={cert.link} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-foreground hover:text-primary transition-colors mt-auto"
+                    >
+                      Verify <ExternalLink size={14} />
+                    </a>
+                  )}
+                </div>
+              </FadeIn>
+            ))}
 
-          {simulationData.map((sim, idx) => (
-            <FadeIn key={sim.title} delay={(certifications.length + idx) * 0.1}>
-              <motion.div
-                whileHover={{ y: -8 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="relative p-7 rounded-3xl border border-white/5 bg-surface-1/40 backdrop-blur-md h-full shadow-sm"
-              >
-                <sim.icon size={36} className="text-primary mb-4" />
-                <span className="absolute top-6 right-6 text-xs font-semibold px-3 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                  {sim.issuer}
-                </span>
-                <h3 className="text-xl font-bold mb-2">{sim.title}</h3>
-                <p className="text-sm text-gray-500 font-medium">{sim.type}</p>
-                <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">
-                  {sim.desc}
-                </p>
-                {sim.link !== "#" && (
-                  <a href={sim.link} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1 text-primary text-sm font-medium hover:underline">
-                    View Certificate <ExternalLink size={14} />
-                  </a>
-                )}
-              </motion.div>
-            </FadeIn>
-          ))}
-
-        </div>
-      )}
+            {simulationData.map((sim, idx) => (
+              <FadeIn key={sim.title} delay={(certifications.length + idx) * 0.05}>
+                <div className="glass-card glass-card-hover p-8 group h-full flex flex-col border-accent/20">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <sim.icon size={24} />
+                  </div>
+                  <h3 className="text-xl font-heading font-black mb-2 tracking-tight group-hover:text-accent transition-colors">
+                    {sim.title}
+                  </h3>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-accent mb-4">
+                    {sim.issuer} • {sim.type}
+                  </div>
+                  <p className="text-foreground/50 text-sm leading-relaxed flex-1 italic">
+                    &quot;{sim.desc}&quot;
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }

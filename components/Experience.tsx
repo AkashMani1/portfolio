@@ -2,148 +2,133 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { portfolioData } from "../app/data/portfolio";
-import { Briefcase, Layers, Server, Layout, GitBranch, Terminal } from "lucide-react";
+import { Briefcase, Layers, Server, Layout, GitBranch, Terminal, Calendar } from "lucide-react";
 import FadeIn from "./FadeIn";
-import ScrambleText from "./ScrambleText"; // Assumes you kept this file
+import { cn } from "@/app/lib/utils";
 
 export default function Experience() {
   const [viewMode, setViewMode] = useState<"summary" | "technical">("technical");
 
   const getCategoryIcon = (text: string) => {
     const lower = text.toLowerCase();
-    if (lower.includes("react") || lower.includes("frontend") || lower.includes("ui")) return <Layout size={18} className="text-blue-400" />;
-    if (lower.includes("node") || lower.includes("api") || lower.includes("backend") || lower.includes("auth")) return <Server size={18} className="text-green-400" />;
+    if (lower.includes("react") || lower.includes("frontend") || lower.includes("ui")) return <Layout size={18} className="text-primary" />;
+    if (lower.includes("node") || lower.includes("api") || lower.includes("backend") || lower.includes("auth")) return <Server size={18} className="text-accent" />;
     if (lower.includes("mongo") || lower.includes("database") || lower.includes("query")) return <Layers size={18} className="text-purple-400" />;
     if (lower.includes("git") || lower.includes("ci/cd") || lower.includes("deploy")) return <GitBranch size={18} className="text-orange-400" />;
-    return <Terminal size={18} className="text-gray-400" />;
+    return <Terminal size={18} className="text-foreground/40" />;
   };
 
   return (
-    <section id="experience" className="py-24 container-custom">
-      <div className="absolute left-6 md:left-12 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-gray-200 dark:via-gray-800 to-transparent -z-10" />
-
-      <FadeIn>
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-          <div>
-            <span className="text-primary font-mono text-[10px] tracking-widest uppercase mb-2 block font-bold">Career Path</span>
-            <h2 className="text-4xl md:text-5xl font-bold flex items-center gap-3 text-gray-900 dark:text-white font-heading tracking-tight">
-              Professional Experience
-            </h2>
-          </div>
-
-          <div className="relative flex bg-gray-100 dark:bg-white/5 p-1 rounded-full border border-gray-200 dark:border-white/10 backdrop-blur-md self-start md:self-auto">
-            <motion.div
-              layout
-              className="absolute top-1 bottom-1 rounded-full bg-white dark:bg-primary shadow-sm"
-              initial={false}
-              animate={{
-                x: viewMode === "summary" ? 0 : "100%",
-                width: "50%"
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            />
+    <section id="experience" className="py-24 relative overflow-hidden">
+      <div className="container-custom">
+        <FadeIn className="mb-16">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+            <div className="max-w-2xl">
+              <span className="text-primary font-black text-[10px] tracking-[0.4em] uppercase block mb-4">
+                Career Roadmap
+              </span>
+              <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 tracking-tight">
+                Professional <span className="text-gradient">Journey</span>
+              </h2>
+            </div>
             
-            <button
-              onClick={() => setViewMode("summary")}
-              className={`relative z-10 px-6 py-2 text-sm font-medium rounded-full transition-colors ${
-                viewMode === "summary" ? "text-gray-900 dark:text-white" : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setViewMode("technical")}
-              className={`relative z-10 px-6 py-2 text-sm font-medium rounded-full transition-colors ${
-                viewMode === "technical" ? "text-gray-900 dark:text-white" : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-              }`}
-            >
-              Engineering
-            </button>
+            <div className="flex bg-white/5 backdrop-blur-md p-1 rounded-full border border-white/10">
+              {["summary", "technical"].map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode as any)}
+                  className={cn(
+                    "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
+                    viewMode === mode
+                      ? "bg-primary text-white shadow-lg"
+                      : "text-foreground/40 hover:text-foreground/80"
+                  )}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </FadeIn>
+        </FadeIn>
 
-      <div className="space-y-12">
-        {portfolioData.experience.map((exp, idx) => (
-          <FadeIn key={idx} delay={idx * 0.1}>
-            <div className="relative pl-8 md:pl-16 group">
-              {/* Timeline Dot positioned for mobile compatibility */}
-              <div className="absolute left-[18px] md:left-[44px] top-8 w-3 h-3 rounded-full bg-primary ring-4 ring-primary/10 z-10 group-hover:scale-125 transition-all duration-300"></div>
+        <div className="space-y-12 relative">
+          {/* Timeline Line */}
+          <div className="absolute left-[23px] top-0 bottom-0 w-px bg-gradient-to-b from-primary/50 via-primary/10 to-transparent hidden md:block" />
 
-              <motion.div
-                layout
-                className="relative p-6 md:p-8 rounded-3xl border border-white/5 bg-surface-1/30 backdrop-blur-xl overflow-hidden transition-all hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          {portfolioData.experience.map((exp, idx) => (
+            <FadeIn key={idx} delay={idx * 0.1} className="relative md:pl-16">
+              {/* Timeline Dot */}
+              <div className="absolute left-[18px] top-[40px] w-3 h-3 rounded-full bg-primary ring-4 ring-primary/20 hidden md:block" />
+              
+              <div className="glass-card glass-card-hover p-8 md:p-12 relative overflow-hidden group">
+                {/* Decorative background logo/icon */}
+                <Briefcase className="absolute -right-8 -bottom-8 w-48 h-48 text-white/5 -rotate-12 group-hover:rotate-0 transition-transform duration-700 pointer-events-none" />
 
                 <div className="relative z-10">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline mb-8 gap-2">
-                        <div>
-                            <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-1 font-heading tracking-tight">
-                            {exp.role}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-2 text-base md:text-lg">
-                                <span className="text-primary font-medium tracking-tight">{exp.company}</span>
-                                <span className="text-gray-300 dark:text-gray-700 hidden md:inline">•</span>
-                                <span className="text-sm font-mono text-gray-500 dark:text-gray-400 block md:inline w-full md:w-auto">{exp.duration}</span>
-                            </div>
+                  <div className="flex flex-col md:flex-row justify-between items-start mb-10 gap-4">
+                    <div>
+                      <h3 className="text-3xl font-heading font-black mb-2 tracking-tight group-hover:text-primary transition-colors">
+                        {exp.role}
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-foreground/80">{exp.company}</span>
+                        <span className="text-foreground/20">•</span>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
+                          <Calendar size={12} />
+                          {exp.duration}
                         </div>
+                      </div>
                     </div>
+                  </div>
 
-                    <AnimatePresence mode="wait">
-                        {viewMode === "summary" ? (
-                            <motion.div
-                                key="summary"
-                                initial={{ opacity: 0, filter: "blur(4px)" }}
-                                animate={{ opacity: 1, filter: "blur(0px)" }}
-                                exit={{ opacity: 0, filter: "blur(4px)" }}
-                                className="bg-primary/5 border-l-2 border-primary pl-6 py-2 rounded-r-xl"
-                            >
-                                <p className="text-base md:text-xl text-gray-700 dark:text-gray-300 italic font-light leading-relaxed">
-                                &quot;{exp.description}&quot;
-                                </p>
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                key="technical"
-                                initial={{ opacity: 0, filter: "blur(4px)" }}
-                                animate={{ opacity: 1, filter: "blur(0px)" }}
-                                exit={{ opacity: 0, filter: "blur(4px)" }}
-                                className="grid gap-4"
-                            >
-                                {exp.points.map((point, i) => (
-                                <motion.div
-                                    key={i}
-                                    whileHover={{ x: 4 }}
-                                    className="flex gap-4 items-start group/item"
-                                >
-                                    <div className="mt-1 min-w-[28px] h-[28px] md:min-w-[32px] md:h-[32px] rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center group-hover/item:bg-primary/20 transition-colors">
-                                        {getCategoryIcon(point)}
-                                    </div>
-                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm md:text-base pt-1">
-                                    {point}
-                                    </p>
-                                </motion.div>
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <div className="mt-8 pt-6 border-t border-gray-200 dark:border-white/10 flex flex-wrap gap-2">
-                        {exp.stack.map((tech) => (
-                            <span
-                            key={tech}
-                            className="px-3 py-1 text-xs font-medium uppercase tracking-wider rounded-full bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-transparent hover:border-primary/30 hover:text-primary hover:bg-primary/5 transition-all cursor-default"
-                            >
-                            {tech}
-                            </span>
+                  <AnimatePresence mode="wait">
+                    {viewMode === "summary" ? (
+                      <motion.div
+                        key="summary"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="p-6 bg-white/5 rounded-2xl border-l-4 border-primary italic text-lg text-foreground/70"
+                      >
+                         &quot;{exp.description}&quot;
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="technical"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="grid gap-6"
+                      >
+                        {exp.points.map((point, i) => (
+                          <div key={i} className="flex gap-4 group/item">
+                            <div className="mt-1 w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center group-hover/item:border-primary/50 group-hover/item:bg-primary/10 transition-all duration-300">
+                              {getCategoryIcon(point)}
+                            </div>
+                            <p className="text-foreground/60 leading-relaxed font-body flex-1">
+                              {point}
+                            </p>
+                          </div>
                         ))}
-                    </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="mt-12 flex flex-wrap gap-2">
+                    {exp.stack.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-lg bg-white/5 border border-white/10 text-foreground/40 hover:text-primary hover:border-primary/40 transition-all cursor-default"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </motion.div>
-            </div>
-          </FadeIn>
-        ))}
+              </div>
+            </FadeIn>
+          ))}
+        </div>
       </div>
     </section>
   );

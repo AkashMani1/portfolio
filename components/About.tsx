@@ -1,98 +1,83 @@
 "use client";
 import { motion } from "framer-motion";
 import { portfolioData } from "../app/data/portfolio";
-import { GraduationCap, Calendar, Code, Globe, Cpu, Target } from "lucide-react";
+import { GraduationCap, Calendar, Code, Globe, Cpu, Target, User } from "lucide-react";
 import FadeIn from "./FadeIn";
+import { BentoGrid, BentoGridItem } from "./ui/BentoGrid";
+import { cn } from "@/app/lib/utils";
 
 const focusIcons = [Code, Globe, Cpu, Target];
 
 export default function About() {
   return (
-    <section id="about" className="py-24 relative">
+    <section id="about" className="py-24 relative overflow-hidden">
       <div className="container-custom">
-        <FadeIn>
-          <h2 className="text-3xl font-bold mb-10 text-gray-900 dark:text-white font-heading tracking-tight">
-            About Me
+        <FadeIn className="mb-16">
+          <h2 className="text-4xl md:text-5xl font-heading font-black tracking-tight mb-4">
+            The <span className="text-gradient">Architect</span> Behind the Code
           </h2>
+          <p className="text-foreground/60 text-lg max-w-2xl leading-relaxed">
+            I build systems that bridge the gap between complex backend logic and 
+            intuitive user experiences.
+          </p>
         </FadeIn>
         
-        <div className="grid md:grid-cols-3 gap-12 mb-20">
-          <div className="md:col-span-2 space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed text-lg">
-            {portfolioData.summary.map((paragraph, index) => (
-              <FadeIn key={index} delay={index * 0.1}>
-                <p>{paragraph}</p>
-              </FadeIn>
-            ))}
-          </div>
-          
-          <FadeIn delay={0.2} className="h-full">
-            <motion.div
-              whileHover={{ y: -5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="bg-surface-1/50 p-8 rounded-2xl shadow-sm border border-white/5 h-full backdrop-blur-md cursor-default"
-            >
-              <h3 className="font-bold text-lg mb-6 flex items-center gap-2 text-gray-900 dark:text-white font-heading">
-                <span className="w-1 h-6 bg-primary rounded-full"></span>
-                Current Focus
-              </h3>
-              <ul className="space-y-5 text-sm font-medium text-gray-600 dark:text-gray-300">
+        <BentoGrid className="mb-20">
+          {/* Summary Card - Large */}
+          <BentoGridItem
+            title="Professional Philosophy"
+            description={
+              <div className="space-y-4 mt-2">
+                {portfolioData.summary.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
+            }
+            className="md:col-span-2 md:row-span-2 min-h-[30rem]"
+            icon={<User className="text-primary" size={24} />}
+          />
+
+          {/* Current Focus Card */}
+          <BentoGridItem
+            title="Current Radar"
+            description={
+              <ul className="space-y-4 mt-4">
                 {portfolioData.currentFocus.map((focus, index) => {
                   const Icon = focusIcons[index] || Target;
-
                   return (
-                    <li key={focus} className="flex items-center gap-3">
-                      <Icon size={18} className="text-primary opacity-80" />
+                    <li key={focus} className="flex items-center gap-3 text-sm font-medium">
+                      <Icon size={18} className="text-primary" />
                       <span>{focus}</span>
                     </li>
                   );
                 })}
               </ul>
-            </motion.div>
-          </FadeIn>
-        </div>
+            }
+            className="md:col-span-1"
+            icon={<Target className="text-accent" size={24} />}
+          />
 
-        <FadeIn>
-          <h3 className="text-2xl font-bold mb-8 flex items-center gap-3 text-gray-900 dark:text-white font-heading">
-            <span className="text-primary text-3xl">🎓</span> Education
-          </h3>
-        </FadeIn>
-        
-        <div className="space-y-6">
-          {portfolioData.education.map((edu, idx) => (
-            <FadeIn key={idx} delay={idx * 0.1}>
-              <motion.div
-                whileHover={{ x: 10, backgroundColor: "var(--color-surface-2)" }}
-                className="group flex flex-col md:flex-row md:items-start justify-between p-6 rounded-2xl border border-white/5 bg-surface-1/30 backdrop-blur-sm transition-colors cursor-default"
-              >
-                <div className="flex gap-5">
-                  <div className="mt-1 p-3 rounded-xl bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 group-hover:bg-primary group-hover:text-white transition-colors">
-                    <GraduationCap size={24} />
+          {/* Education Card */}
+          <BentoGridItem
+            title="Foundations"
+            description={
+              <div className="space-y-6 mt-4">
+                {portfolioData.education.map((edu, idx) => (
+                  <div key={idx} className="group/edu">
+                    <div className="flex items-center gap-2 mb-1">
+                      <GraduationCap size={16} className="text-primary" />
+                      <span className="text-xs font-black uppercase tracking-widest text-foreground/40">{edu.year}</span>
+                    </div>
+                    <div className="font-bold text-foreground group-hover/edu:text-primary transition-colors">{edu.degree}</div>
+                    <div className="text-xs text-foreground/60">{edu.school}</div>
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                      {edu.degree}
-                    </h4>
-                    <p className="text-gray-600 dark:text-gray-400 font-medium mt-1">
-                      {edu.school}
-                    </p>
-                    {edu.desc && (
-                      <p className="text-sm text-gray-500 dark:text-gray-500 mt-3 leading-relaxed max-w-2xl">
-                        {edu.desc}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-4 md:mt-0 md:pl-6 flex items-start">
-                  <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-xs font-mono font-bold text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/5 group-hover:border-primary/30 transition-colors">
-                    <Calendar size={12} />
-                    {edu.year}
-                  </span>
-                </div>
-              </motion.div>
-            </FadeIn>
-          ))}
-        </div>
+                ))}
+              </div>
+            }
+            className="md:col-span-1"
+            icon={<GraduationCap className="text-primary" size={24} />}
+          />
+        </BentoGrid>
       </div>
     </section>
   );

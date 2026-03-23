@@ -1,17 +1,15 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Code2, Database, Layout, Terminal, Cpu, Globe, Loader2 } from "lucide-react";
+import { Code2, Database, Layout, Terminal, Cpu, Globe, Loader2, Sparkles } from "lucide-react";
 import FadeIn from "./FadeIn";
-import MagneticTag from "./MagneticTag";
 import { portfolioData } from "@/app/data/portfolio";
 import { db } from "../app/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { BentoGrid, BentoGridItem } from "./ui/BentoGrid";
+import { cn } from "@/app/lib/utils";
 
 export default function Skills() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [opacity, setOpacity] = useState(0);
   const [skillsData, setSkillsData] = useState<Record<string, string[]> | null>(portfolioData.skills);
   const [loading, setLoading] = useState(true);
 
@@ -19,44 +17,30 @@ export default function Skills() {
     const fetchSkills = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "skills"));
-        const data: Record<string, string[]> = {};
-
         if (!querySnapshot.empty) {
-            querySnapshot.forEach((doc) => {
+          const data: Record<string, string[]> = {};
+          querySnapshot.forEach((doc) => {
             data[doc.id] = doc.data().items || [];
-            });
-            setSkillsData(data);
-        } else {
-            setSkillsData(portfolioData.skills);
+          });
+          setSkillsData(data);
         }
       } catch (error) {
         console.error("Error fetching skills:", error);
-        setSkillsData(portfolioData.skills);
       } finally {
         setLoading(false);
       }
     };
-
     fetchSkills();
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    setOpacity(1);
-  };
-
-  const handleMouseLeave = () => setOpacity(0);
-
   const getIcon = (category: string) => {
     switch (category.toLowerCase()) {
-      case "languages": return <Code2 size={24} className="text-blue-500" />;
-      case "webmobile": return <Globe size={24} className="text-green-500" />;
-      case "database": return <Database size={24} className="text-purple-500" />;
-      case "tools": return <Terminal size={24} className="text-orange-500" />;
-      case "core": return <Cpu size={24} className="text-red-500" />;
-      default: return <Layout size={24} className="text-gray-500" />;
+      case "languages": return <Code2 size={24} className="text-primary" />;
+      case "webmobile": return <Globe size={24} className="text-accent" />;
+      case "database": return <Database size={24} className="text-purple-400" />;
+      case "tools": return <Terminal size={24} className="text-orange-400" />;
+      case "core": return <Cpu size={24} className="text-red-400" />;
+      default: return <Layout size={24} className="text-foreground/40" />;
     }
   };
 
@@ -68,117 +52,73 @@ export default function Skills() {
     core: "CS Fundamentals"
   };
 
-  // Order to display categories
   const sortOrder = ["languages", "webMobile", "database", "tools", "core"];
 
   return (
     <section id="skills" className="py-24 relative overflow-hidden">
-      <div className="absolute right-0 top-1/4 w-1/2 h-1/2 bg-primary/5 rounded-full blur-[120px] -z-10" />
-
       <div className="container-custom">
-        <FadeIn>
-          <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-white font-heading tracking-tight">
+        <FadeIn className="mb-16">
+          <div className="max-w-3xl">
+            <span className="text-primary font-black text-[10px] tracking-[0.4em] uppercase block mb-4">
               Technical Arsenal
+            </span>
+            <h2 className="text-4xl md:text-5xl font-heading font-black mb-6 tracking-tight">
+              Mastered <span className="text-gradient">Technologies</span>
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-lg">
-              I focus on the tools that help teams ship faster and maintain quality:
-              modern frontend frameworks, backend APIs, databases, and delivery tooling.
+            <p className="text-lg text-foreground/60 leading-relaxed font-body">
+              A deep dive into the tools and frameworks I use to build robust, 
+              scalable, and high-performance digital products.
             </p>
           </div>
         </FadeIn>
 
         {loading ? (
-             <div className="flex justify-center py-20">
-                <Loader2 className="animate-spin text-primary" size={32} />
-             </div>
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-primary" size={40} />
+          </div>
         ) : (
-            <div 
-            ref={containerRef}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-            <div
-                className="pointer-events-none absolute -inset-px transition-opacity duration-300 rounded-3xl z-0"
-                style={{
-                opacity,
-                background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(79, 70, 229, 0.15), transparent 40%)`
-                }}
-            />
-
+          <BentoGrid>
             {skillsData && Object.entries(skillsData)
-                .sort(([keyA], [keyB]) => {
-                    const indexA = sortOrder.indexOf(keyA);
-                    const indexB = sortOrder.indexOf(keyB);
-                    if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-                    if (indexA !== -1) return -1;
-                    if (indexB !== -1) return 1;
-                    return 0; 
-                })
-                .map(([category, skills], idx) => (
-                <FadeIn key={category} delay={idx * 0.1} className="h-full">
-                <motion.div 
-                    whileHover={{ y: -5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    className="relative h-full bg-surface-1/40 border border-white/5 rounded-3xl p-8 overflow-hidden group hover:border-primary/20 transition-colors backdrop-blur-md"
-                >
-                    <div 
-                    className="absolute -inset-px bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
-                    />
-
-                    <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="p-3 rounded-2xl bg-white dark:bg-white/10 shadow-sm">
-                        {getIcon(category)}
-                        </div>
-                        <h3 className="text-xl font-bold capitalize text-gray-900 dark:text-gray-100">
-                        {displayNames[category] || category}
-                        </h3>
-                    </div>
-
-                        <div className="flex flex-wrap gap-3">
-                        {skills.map((skill) => (
-                        <MagneticTag key={skill}>
-                            <span className="inline-block px-4 py-2 rounded-xl text-[11px] uppercase tracking-wider font-bold bg-white/5 border border-white/5 text-gray-400 hover:text-primary hover:border-primary/50 transition-colors cursor-default shadow-sm backdrop-blur-sm">
-                            {skill}
-                            </span>
-                        </MagneticTag>
-                        ))}
-                    </div>
-                    </div>
-                </motion.div>
-                </FadeIn>
-            ))}
-
-            <FadeIn delay={0.6} className="h-full">
-                <motion.div 
-                whileHover={{ y: -5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="relative h-full bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-3xl p-8 overflow-hidden group"
-                >
-                <div className="flex items-center gap-4 mb-6">
-                    <div className="p-3 rounded-2xl bg-primary/20 shadow-sm animate-pulse">
-                        <Cpu size={24} className="text-primary" />
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                        Next on Radar
-                    </h3>
-                </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Building the next layer of market-ready depth:
-                </p>
-                <div className="flex flex-wrap gap-3">
-                    {["Docker", "PostgreSQL", "Redis", "AI SDKs"].map((item) => (
-                        <span key={item} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
-                            {item}
+              .sort(([keyA], [keyB]) => sortOrder.indexOf(keyA) - sortOrder.indexOf(keyB))
+              .map(([category, skills], idx) => (
+                <BentoGridItem
+                  key={category}
+                  title={displayNames[category] || category}
+                  description={
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {skills.map((skill) => (
+                        <span 
+                          key={skill} 
+                          className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest bg-white/5 border border-white/5 text-foreground/50 group-hover/bento:text-foreground transition-colors"
+                        >
+                          {skill}
                         </span>
+                      ))}
+                    </div>
+                  }
+                  icon={getIcon(category)}
+                  className={cn(
+                    idx % 3 === 0 ? "md:col-span-2" : "md:col-span-1"
+                  )}
+                  delay={idx * 0.05}
+                />
+              ))}
+              <BentoGridItem
+                title="Next on Radar"
+                description={
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {["Docker", "PostgreSQL", "Redis", "AI SDKs"].map((item) => (
+                      <span key={item} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
+                        {item}
+                      </span>
                     ))}
-                </div>
-                </motion.div>
-            </FadeIn>
-
-            </div>
+                  </div>
+                }
+                icon={<Sparkles className="text-primary animate-pulse" size={24} />}
+                className="md:col-span-1"
+                delay={0.3}
+              />
+          </BentoGrid>
         )}
       </div>
     </section>

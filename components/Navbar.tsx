@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Menu, X, Settings } from "lucide-react"; // Added Settings icon
+import { Moon, Sun, Menu, X, Settings } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import Magnetic from "./Magnetic";
+import { cn } from "@/app/lib/utils";
 
 const navLinks = [
   { name: "About", href: "#about" },
@@ -20,23 +20,17 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => setMounted(true), []);
 
-  // Lock scroll when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [isOpen]);
-
   useEffect(() => {
     const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      
       const sections = navLinks.map(link => document.querySelector(link.href));
-      const scrollPosition = window.scrollY + 200;
+      const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
         if (section instanceof HTMLElement) {
@@ -55,111 +49,115 @@ export default function Navbar() {
   }, []);
 
   return (
-    <>
-      <nav className="sticky top-0 z-40 w-full border-b border-white/5 bg-background/70 backdrop-blur-xl">
-        <div className="container-custom flex h-16 items-center justify-between">
-          {/* Logo - CHANGED TO GEAR ICON */}
-          <Link href="/" className="text-2xl font-bold tracking-tighter z-50 relative text-primary hover:rotate-90 transition-transform duration-500" aria-label="Home">
-            <Settings size={28} strokeWidth={2.5} />
+    <header className={cn(
+      "fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-4",
+      scrolled ? "px-4" : "px-0"
+    )}>
+      <nav className={cn(
+        "container-custom mx-auto transition-all duration-500",
+        scrolled ? "glass-card px-8 py-3 max-w-5xl rounded-full shadow-2xl" : "bg-transparent py-4"
+      )}>
+        <div className="flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-2 z-50">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:rotate-90">
+              <Settings size={22} />
+            </div>
+            <span className="font-heading font-black tracking-tighter text-xl hidden sm:block">
+              AKASH<span className="text-primary">.</span>
+            </span>
           </Link>
 
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Magnetic key={link.name}>
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-1">
+              {navLinks.map((link) => (
                 <Link
+                  key={link.name}
                   href={link.href}
-                  className={`relative text-[11px] uppercase font-bold tracking-wider transition-colors px-2 py-1 font-heading ${
-                    activeSection === link.href ? "text-primary" : "text-gray-500 hover:text-primary"
-                  }`}
+                  className={cn(
+                    "text-[10px] uppercase font-black tracking-[0.2em] px-4 py-2 rounded-full transition-all",
+                    activeSection === link.href 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-foreground/40 hover:text-foreground hover:bg-white/5"
+                  )}
                 >
                   {link.name}
-                  {activeSection === link.href && (
-                    <motion.span
-                      layoutId="activeNav"
-                      className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
                 </Link>
-              </Magnetic>
-            ))}
-            
-            {mounted && (
-              <Magnetic>
-                <button
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="p-2 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition"
-                  aria-label="Toggle Theme"
-                >
-                  {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                </button>
-              </Magnetic>
-            )}
-          </div>
+              ))}
+            </div>
 
-          {/* Mobile Menu Toggle Button */}
-          <div className="md:hidden flex items-center gap-4 z-50 relative">
+            <div className="h-6 w-px bg-white/10" />
+
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 rounded-full bg-gray-100 dark:bg-white/10"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all"
+              >
+                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            )}
+          </div>
+
+          <div className="md:hidden flex items-center gap-2">
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center"
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
             )}
             <button 
-              onClick={() => setIsOpen(!isOpen)} 
-              className="p-2 rounded-full bg-gray-100 dark:bg-white/10"
-              aria-label="Toggle Menu"
+              onClick={() => setIsOpen(!isOpen)}
+              className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20"
             >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
+              {isOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* MOBILE FULLSCREEN MENU OVERLAY */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-30 bg-white dark:bg-[#0a0a0a] pt-24 px-6 md:hidden flex flex-col gap-6"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 z-40 bg-background/95 backdrop-blur-2xl md:hidden flex flex-col items-center justify-center p-8"
           >
-            {navLinks.map((link, idx) => (
-              <motion.div
-                key={link.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <Link
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`block text-3xl font-bold tracking-tight py-2 ${
-                      activeSection === link.href ? "text-primary" : "text-gray-900 dark:text-gray-100"
-                  }`}
+            <div className="flex flex-col gap-8 text-center">
+              {navLinks.map((link, idx) => (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
                 >
-                  {link.name}
-                </Link>
-                <div className="h-px w-full bg-gray-100 dark:bg-white/10 mt-2" />
-              </motion.div>
-            ))}
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "text-3xl font-heading font-black tracking-tight",
+                      activeSection === link.href ? "text-primary" : "text-foreground/60"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
             
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="mt-auto mb-10 text-sm text-gray-500"
+              className="absolute bottom-12 text-center"
             >
-              <p>Based in Kolkata, India.</p>
-              <p>akashmani9955@gmail.com</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-foreground/20">Get in touch</p>
+              <p className="font-bold mt-2">akashmani9955@gmail.com</p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </header>
   );
 }

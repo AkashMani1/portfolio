@@ -3,24 +3,25 @@
 import { BadgeCheck, Boxes, BrainCircuit, Rocket } from "lucide-react";
 import FadeIn from "./FadeIn";
 import { portfolioData } from "@/app/data/portfolio";
+import { cn } from "@/app/lib/utils";
 
 const icons = [Rocket, Boxes, BrainCircuit];
 
 export default function MarketFit() {
   return (
-    <section id="value" className="py-24 relative">
+    <section id="value" className="py-24 relative overflow-hidden">
       <div className="container-custom">
-        <FadeIn>
-          <div className="max-w-3xl mb-12">
-            <span className="text-primary font-mono text-[10px] tracking-[0.25em] uppercase block mb-3 font-bold">
-              Market Fit
+        <FadeIn className="mb-16">
+          <div className="max-w-3xl">
+            <span className="text-primary font-black text-[10px] tracking-[0.4em] uppercase block mb-4">
+              Value Proposition
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-heading tracking-tight">
-              What I bring to a modern full-stack team
+            <h2 className="text-4xl md:text-5xl font-heading font-black mb-8 tracking-tight">
+              Bridging the <span className="text-gradient">Production</span> Gap
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
-              The strongest opportunities today favor developers who can ship across the stack,
-              think in product terms, and grow into backend depth. That is the direction I am building toward.
+            <p className="text-lg text-foreground/60 leading-relaxed font-body">
+              I bring a production-first mindset to every line of code, ensuring that 
+              applications are not just functional, but scalable and maintainable.
             </p>
           </div>
         </FadeIn>
@@ -31,12 +32,14 @@ export default function MarketFit() {
 
             return (
               <FadeIn key={item.title} delay={index * 0.1}>
-                <div className="h-full rounded-3xl border border-white/5 bg-surface-1/50 backdrop-blur-md p-8 shadow-sm group hover:border-primary/20 transition-colors">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                    <Icon size={22} />
+                <div className="glass-card glass-card-hover h-full p-10 group">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 text-primary flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-lg">
+                    <Icon size={28} />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 font-heading tracking-tight">{item.title}</h3>
-                  <p className="text-sm leading-7 text-gray-600 dark:text-gray-400">{item.desc}</p>
+                  <h3 className="text-2xl font-heading font-bold mb-4 tracking-tight group-hover:text-primary transition-colors">{item.title}</h3>
+                  <p className="text-foreground/50 leading-relaxed font-body italic">
+                     &quot;{item.desc}&quot;
+                  </p>
                 </div>
               </FadeIn>
             );

@@ -1,76 +1,94 @@
 @import "tailwindcss";
 
-/* 1. SETUP DARK MODE (Class-based for your toggle button) */
+/* 1. SETUP DARK MODE */
 @variant dark (&:where(.dark, .dark *));
 
-/* 2. DEFINE YOUR THEME DIRECTLY HERE */
+/* 2. PREMIUM DESIGN SYSTEM - SENIOR EDITION */
 @theme {
-  --color-primary-light: #6366f1;
-  --color-primary: #4f46e5;
-  --color-primary-dark: #4338ca;
-  --color-accent: #f43f5e;
-  
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  /* Colors - Obsidian & Electric Indigo */
+  --color-background: #080809;
+  --color-foreground: #f0f0f2;
+  --color-primary: #6366f1;
+  --color-primary-muted: rgba(99, 102, 241, 0.1);
+  --color-accent: #06b6d4;
+  --color-surface: #121214;
+  --color-surface-hover: #1a1a1d;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-bright: rgba(255, 255, 255, 0.15);
 
   /* Elevation Surfaces */
-  --color-surface-1: #161618;
-  --color-surface-2: #1c1c1e;
+  --color-card: #121214;
+  --color-card-foreground: #e5e7eb;
 
   /* Typography */
   --font-heading: var(--font-outfit);
   --font-body: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 
-  /* Spacing - Base 8 system */
-  --spacing-base: 8px;
-  --spacing-1: calc(1 * var(--spacing-base));
-  --spacing-2: calc(2 * var(--spacing-base));
-  --spacing-3: calc(3 * var(--spacing-base));
-  --spacing-4: calc(4 * var(--spacing-base));
-  --spacing-6: calc(6 * var(--spacing-base));
-  --spacing-8: calc(8 * var(--spacing-base));
-  --spacing-12: calc(12 * var(--spacing-base));
-  --spacing-16: calc(16 * var(--spacing-base));
+  /* Glassmorphism Utilities */
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+  --backdrop-blur-glass: blur(12px);
 }
 
-/* 3. DEFINE THE COLOR VARIABLES - NEXUS EDITION (Dark Default) */
+/* 3. DEFINE VARIABLES */
 :root {
-  --background: #0a0a0b; 
-  --foreground: #f9fafb;
-  --card: #161618;
-  --card-foreground: #f3f4f6;
-  --accent: #f43f5e;
+  --background: #080809;
+  --foreground: #f0f0f2;
+  --card: #121214;
+  --card-foreground: #e5e7eb;
+  --accent: #06b6d4;
+  --primary: #6366f1;
 }
 
-/* Light mode overrides if needed */
 .light {
-  --background: #fdfdfd;
-  --foreground: #111827;
+  --background: #fafafa;
+  --foreground: #111111;
   --card: #ffffff;
-  --card-foreground: #374151;
+  --card-foreground: #1a1a1a;
+  --accent: #0891b2;
+  --primary: #4f46e5;
 }
 
-/* 4. APPLY DEFAULTS */
+/* 4. PREMIUM UTILITIES */
+@layer utilities {
+  .glass-card {
+    @apply bg-surface/40 backdrop-blur-md border border-border shadow-glass transition-all duration-300;
+  }
+  
+  .glass-card-hover {
+    @apply hover:bg-surface/60 hover:border-border-bright hover:shadow-primary/5 hover:-translate-y-1;
+  }
+
+  .mesh-gradient {
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(6, 182, 212, 0.05) 0px, transparent 50%);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-accent;
+  }
+}
+
+/* 5. BASE STYLES */
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-body), sans-serif;
+  @apply antialiased selection:bg-primary/30;
+}
+
+h1, h2, h3, h4, .font-heading {
+  font-family: var(--font-heading), sans-serif;
 }
 
 .container-custom {
-  max-width: 64rem;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  @apply max-w-7xl mx-auto px-6 md:px-8;
 }
 
-@media (min-width: 640px) {
-  .container-custom {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
 }

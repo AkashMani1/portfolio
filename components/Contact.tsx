@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { portfolioData } from "../app/data/portfolio";
-import { Github, Linkedin, Copy, Check, Send, Calendar, Loader2, AlertCircle, X } from "lucide-react";
+import { Github, Linkedin, Copy, Check, Send, Calendar, Loader2, AlertCircle, X, Mail } from "lucide-react";
 import FadeIn from "./FadeIn";
 import confetti from "canvas-confetti"; 
 import { toast } from "sonner";
-import { db } from "../app/lib/firebase"; // IMPORT FIREBASE
+import { db } from "../app/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { cn } from "@/app/lib/utils";
 
 const CALENDLY_URL = "https://calendly.com/akashmani9955/30min"; 
 
@@ -38,17 +39,15 @@ export default function Contact() {
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(portfolioData.personalInfo.email);
     setCopied(true);
-    toast.success("Email copied to clipboard!", {
-      description: "Ready to paste into your mail client.",
-      icon: <Check className="text-green-500" size={16} />,
+    toast.success("Email copied!", {
+      description: "Ready to paste.",
+      icon: <Check className="text-primary" size={16} />,
     });
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // --- UPDATED SUBMIT LOGIC WITH FIREBASE ---
   const onSubmit = async (data: FormData) => {
     try {
-      // 1. Save to Firebase
       await addDoc(collection(db, "contact_logs"), {
         name: data.name,
         email: data.email,
@@ -56,175 +55,144 @@ export default function Contact() {
         timestamp: serverTimestamp(),
       });
 
-      // 2. Play Confetti
       const end = Date.now() + 1000;
-      const colors = ["#3b82f6", "#10b981"];
+      const colors = ["#6366f1", "#a855f7"];
       (function frame() {
         confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
         confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
         if (Date.now() < end) requestAnimationFrame(frame);
       })();
 
-      // 3. Show Success Toast
-      toast.success(`Thanks, ${data.name}!`, {
-        description: "Your message has been saved to the database. I'll reply soon.",
+      toast.success(`Message sent!`, {
+        description: "I'll get back to you soon.",
         duration: 5000,
       });
-      
       reset();
     } catch (error) {
       console.error("Firebase Error:", error);
-      toast.error("Failed to save message. Please check your connection.");
+      toast.error("Failed to send message.");
     }
   };
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
-
-      <div className="container-custom max-w-5xl">
-        <FadeIn>
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 dark:text-white font-heading">
-              Let&apos;s work together.
+      <div className="container-custom max-w-6xl">
+        <FadeIn className="mb-20">
+          <div className="text-center">
+            <span className="text-primary font-black text-[10px] tracking-[0.4em] uppercase block mb-4">
+              Get in Touch
+            </span>
+            <h2 className="text-5xl md:text-7xl font-heading font-black mb-6 tracking-tight">
+              Let&apos;s Build <span className="text-gradient">Something</span> Great
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Currently open for <span className="text-primary font-medium">internships</span> and new opportunities. 
-              Got a project in mind? Let's make it happen.
-            </p>
           </div>
         </FadeIn>
 
-        <div className="grid md:grid-cols-5 gap-12 items-start">
-          
-          {/* LEFT: Actions */}
-          <div className="md:col-span-2 space-y-8">
-            <FadeIn delay={0.2}>
-              <div className="space-y-6">
-                <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Fast Actions</p>
-                
-                <button
-                  onClick={handleCopyEmail}
-                  className="group relative w-full text-left p-5 rounded-2xl bg-surface-1/50 border border-white/5 hover:border-primary/50 transition-all shadow-sm overflow-hidden backdrop-blur-md"
-                >
-                  <div className="relative z-10 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium mb-1">Email me directly</p>
-                      <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                        {portfolioData.personalInfo.email}
-                      </p>
-                    </div>
-                    <div className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all">
-                      {copied ? <Check size={20} /> : <Copy size={20} />}
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => setShowScheduler(true)}
-                  className="group relative w-full block p-5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-primary/50 transition-all shadow-sm hover:shadow-md text-left"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium mb-1">Prefer a video call?</p>
-                      <p className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-primary transition-colors">
-                        Schedule a meeting
-                      </p>
-                    </div>
-                    <div className="p-2 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all">
-                      <Calendar size={20} />
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              <div className="mt-10 space-y-4">
-                <p className="text-sm font-semibold uppercase tracking-wider text-gray-500">Connect</p>
-                <div className="flex gap-3">
-                  {[
-                    { icon: Github, href: portfolioData.personalInfo.github },
-                    { icon: Linkedin, href: portfolioData.personalInfo.linkedin }
-                  ].map((Item, idx) => (
-                    <a
-                      key={idx}
-                      href={Item.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-3 rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300 hover:scale-110"
+        <div className="grid lg:grid-cols-12 gap-12">
+          {/* LEFT: INFO */}
+          <div className="lg:col-span-5 space-y-6">
+            <FadeIn delay={0.1}>
+              <div className="glass-card p-10 space-y-12">
+                <div>
+                  <h3 className="text-2xl font-heading font-black mb-6 tracking-tight">Contact Info</h3>
+                  <div className="space-y-6">
+                    <button 
+                      onClick={handleCopyEmail}
+                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-primary/50 transition-all"
                     >
-                      <Item.icon size={22} />
-                    </a>
-                  ))}
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Mail size={20} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-1">Email</p>
+                        <p className="font-bold text-foreground/80 group-hover:text-primary transition-colors truncate">
+                          {portfolioData.personalInfo.email}
+                        </p>
+                      </div>
+                      <div className="text-foreground/20 group-hover:text-primary transition-colors">
+                        {copied ? <Check size={18} /> : <Copy size={18} />}
+                      </div>
+                    </button>
+
+                    <button 
+                      onClick={() => setShowScheduler(true)}
+                      className="group flex items-center gap-4 w-full text-left p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-accent/50 transition-all"
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Calendar size={20} />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-1">Meeting</p>
+                        <p className="font-bold text-foreground/80 group-hover:text-accent transition-colors">Schedule a Call</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                   <h3 className="text-[10px] font-black uppercase tracking-widest text-foreground/40 mb-6">Social</h3>
+                   <div className="flex gap-4">
+                    {[
+                      { icon: Github, href: portfolioData.personalInfo.github },
+                      { icon: Linkedin, href: portfolioData.personalInfo.linkedin }
+                    ].map((Item, idx) => (
+                      <a 
+                        key={idx} 
+                        href={Item.href}
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 text-foreground/60 flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-500 hover:scale-110"
+                      >
+                        <Item.icon size={24} />
+                      </a>
+                    ))}
+                   </div>
                 </div>
               </div>
             </FadeIn>
           </div>
 
-          {/* RIGHT: Validated Form */}
-          <div className="md:col-span-3">
-            <FadeIn delay={0.4}>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-surface-1/50 p-8 rounded-3xl border border-white/5 backdrop-blur-md">
-                
-                <div className="grid md:grid-cols-2 gap-6">
+          {/* RIGHT: FORM */}
+          <div className="lg:col-span-7">
+            <FadeIn delay={0.2}>
+              <form onSubmit={handleSubmit(onSubmit)} className="glass-card p-10 space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Name</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 ml-1">Name</label>
                     <input 
                       {...register("name")}
-                      type="text" 
-                      placeholder="John Doe" 
-                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.name ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
+                      className="modern-input w-full"
+                      placeholder="Your Name"
                     />
-                    {errors.name && (
-                      <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
-                        <AlertCircle size={12} /> {errors.name.message}
-                      </p>
-                    )}
+                    {errors.name && <p className="text-red-400 text-[10px] uppercase font-black tracking-widest ml-1">{errors.name.message}</p>}
                   </div>
-                  
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Email</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 ml-1">Email</label>
                     <input 
                       {...register("email")}
-                      type="email" 
-                      placeholder="john@example.com" 
-                      className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.email ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
+                      className="modern-input w-full"
+                      placeholder="hello@example.com"
                     />
-                    {errors.email && (
-                      <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
-                        <AlertCircle size={12} /> {errors.email.message}
-                      </p>
-                    )}
+                    {errors.email && <p className="text-red-400 text-[10px] uppercase font-black tracking-widest ml-1">{errors.email.message}</p>}
                   </div>
                 </div>
-                
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500 ml-1">Message</label>
+                  <label className="text-[10px] font-black uppercase tracking-widest text-foreground/40 ml-1">Message</label>
                   <textarea 
                     {...register("message")}
-                    rows={5} 
-                    placeholder="Tell me about your project..." 
-                    className={`w-full bg-white dark:bg-black/20 border-2 rounded-xl py-3 px-4 text-base focus:outline-none transition-colors resize-none placeholder-gray-400 dark:placeholder-gray-600 dark:text-white ${errors.message ? 'border-red-400 focus:border-red-500' : 'border-transparent focus:border-primary'}`}
-                  ></textarea>
-                  {errors.message && (
-                    <p className="text-red-500 text-xs flex items-center gap-1 ml-1">
-                      <AlertCircle size={12} /> {errors.message.message}
-                    </p>
-                  )}
+                    rows={6}
+                    className="modern-input w-full resize-none"
+                    placeholder="Tell me about your vision..."
+                  />
+                  {errors.message && <p className="text-red-400 text-[10px] uppercase font-black tracking-widest ml-1">{errors.message.message}</p>}
                 </div>
 
-                <motion.button 
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <button 
                   disabled={isSubmitting}
-                  type="submit"
-                  className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-primary-dark transition-all disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-primary/20"
+                  className="w-full h-16 rounded-2xl bg-primary text-white font-black uppercase tracking-[0.2em] text-sm flex items-center justify-center gap-3 transition-transform active:scale-95 disabled:opacity-50 shadow-xl shadow-primary/20 hover:brightness-110"
                 >
-                  {isSubmitting ? (
-                    <>Sending <Loader2 className="animate-spin" size={18} /></>
-                  ) : (
-                    <>Send Message <Send size={18} /></>
-                  )}
-                </motion.button>
+                  {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <>Send Message <Send size={18} /></>}
+                </button>
               </form>
             </FadeIn>
           </div>
@@ -238,18 +206,18 @@ export default function Contact() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setShowScheduler(false)}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-4xl h-[80vh] bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800"
+              className="relative w-full max-w-5xl h-[85vh] bg-background rounded-3xl overflow-hidden border border-white/10 shadow-3xl"
             >
               <button 
                 onClick={() => setShowScheduler(false)}
-                className="absolute top-4 right-4 z-10 p-2 bg-gray-100 dark:bg-gray-800 rounded-full hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-500 transition-colors"
+                className="absolute top-6 right-6 z-10 p-3 bg-white/5 rounded-full hover:bg-red-500 hover:text-white transition-all ring-1 ring-white/10"
               >
                 <X size={20} />
               </button>
