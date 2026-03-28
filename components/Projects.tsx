@@ -25,7 +25,7 @@ export default function Projects() {
         const querySnapshot = await getDocs(collection(db, "projects"));
         if (!querySnapshot.empty) {
           const data = querySnapshot.docs.reduce<CloudProject[]>((acc, doc) => {
-            const project = { id: doc.id, ...doc.data() } as any;
+            const project = { id: doc.id, ...(doc.data() as ProjectItem) };
             acc.push(project);
             return acc;
           }, []);

@@ -94,7 +94,7 @@ export default function Certifications() {
                   <p className="text-foreground/50 text-sm leading-relaxed mb-6 flex-1 italic">
                     &quot;{cert.desc}&quot;
                   </p>
-                  {cert.link && cert.link !== "#" && (
+                  {cert.link && cert.link.startsWith("http") && (
                     <a 
                       href={cert.link} 
                       target="_blank" 

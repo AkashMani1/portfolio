@@ -36,7 +36,7 @@ export default function Experience() {
               {["summary", "technical"].map((mode) => (
                 <button
                   key={mode}
-                  onClick={() => setViewMode(mode as any)}
+                  onClick={() => setViewMode(mode as "summary" | "technical")}
                   className={cn(
                     "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
                     viewMode === mode

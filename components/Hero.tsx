@@ -18,16 +18,16 @@ export default function Hero() {
         <FadeIn delay={0.1}>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-primary text-sm font-medium mb-8">
             <Sparkles size={16} className="text-accent" />
-            <span className="text-foreground/80">{portfolioData.personalInfo.availability}</span>
+            <span className="text-foreground/80">Available — Internships, Freelance &amp; Junior Roles</span>
           </div>
         </FadeIn>
 
         <div className="max-w-4xl">
           <FadeIn delay={0.2}>
             <h1 className="text-5xl md:text-8xl font-heading font-black leading-[1.1] mb-8 tracking-tighter">
-              Crafting <span className="text-gradient">Digital</span> <br />
+              Building <span className="text-gradient">Products</span> <br />
               <span className="flex items-center gap-4">
-                Experiences
+                That Ship
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: "120px" }}
@@ -40,7 +40,7 @@ export default function Hero() {
 
           <FadeIn delay={0.3}>
             <p className="text-xl md:text-2xl text-foreground/60 max-w-2xl mb-12 leading-relaxed font-body">
-              {portfolioData.personalInfo.tagline}
+              Full-stack developer who turns ideas into production-grade applications — clean architecture, strong backend, and UI that feels right on real devices.
             </p>
           </FadeIn>
 
@@ -62,14 +62,15 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 className="group px-8 py-4 rounded-full glass-card font-bold transition-all hover:bg-surface-hover flex items-center gap-2"
               >
-                Download CV <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
+                View Résumé <Download size={20} className="group-hover:translate-y-0.5 transition-transform" />
               </a>
 
               <div className="flex gap-6 pl-2 sm:pl-6 sm:border-l border-border">
                 <a 
                   href={portfolioData.personalInfo.github} 
                   target="_blank" 
-                  rel="noreferrer" 
+                  rel="noreferrer"
+                  aria-label="GitHub profile"
                   className="text-foreground/40 hover:text-primary transition-all hover:scale-125"
                 >
                   <Github size={28} />
@@ -77,10 +78,11 @@ export default function Hero() {
                 <a 
                   href={portfolioData.personalInfo.linkedin} 
                   target="_blank" 
-                  rel="noreferrer" 
+                  rel="noreferrer"
+                  aria-label="LinkedIn profile"
                   className="text-foreground/40 hover:text-primary transition-all hover:scale-125"
                 >
-                  <Linkedin size={28} />
+                  <Linkedin size={28} />  
                 </a>
               </div>
             </div>

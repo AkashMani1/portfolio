@@ -1,0 +1,192 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 2914 >>
+stream
+q
+1 1 1 rg
+0 0 612 792 re f
+Q
+0 0 0 rg
+0 0 0 RG
+BT
+/F2 22 Tf
+46 752 Td
+24 TL
+(App Summary) Tj
+ET
+1 w
+46 734 m
+566 734 l
+S
+BT
+/F2 13 Tf
+46 708 Td
+14 TL
+(What it is) Tj
+ET
+BT
+/F1 10 Tf
+46 690 Td
+12 TL
+(A personal portfolio web app for Akash Mani built with Next.js, TypeScript, Tailwind CSS, and Framer Motion.) Tj
+T*
+(Beyond showcasing profile content, it includes a chat assistant, Firestore-backed interactions, and an admin console.) Tj
+ET
+BT
+/F2 13 Tf
+46 652 Td
+14 TL
+(Who it's for) Tj
+ET
+BT
+/F1 10 Tf
+46 634 Td
+12 TL
+(Primary persona: recruiters, hiring managers, collaborators, and visitors evaluating Akash's work and contacting him.) Tj
+ET
+BT
+/F2 13 Tf
+46 606 Td
+14 TL
+(What it does) Tj
+ET
+BT
+/F1 9.2 Tf
+56 590 Td
+11 TL
+(- Single-page portfolio with Hero, About, Skills, Projects, Experience, Contact, and Guestbook sections.) Tj
+ET
+BT
+/F1 9.2 Tf
+56 573 Td
+11 TL
+(- Animated UI with Framer Motion plus smooth scrolling, particle background, cursor glow, and scroll progress.) Tj
+ET
+BT
+/F1 9.2 Tf
+56 556 Td
+11 TL
+(- AI assistant widget that sends user questions to /api/chat and can return the resume link.) Tj
+ET
+BT
+/F1 9.2 Tf
+56 539 Td
+11 TL
+(- Contact form validated with Zod/react-hook-form, then saved to Firestore contact_logs.) Tj
+ET
+BT
+/F1 9.2 Tf
+56 522 Td
+11 TL
+(- Realtime guestbook backed by Firestore onSnapshot listeners.) Tj
+ET
+BT
+/F1 9.2 Tf
+56 505 Td
+11 TL
+(- Firestore-backed skills, projects, certifications, admin sync tools, and a live page-view counter.) Tj
+ET
+BT
+/F2 13 Tf
+46 484 Td
+14 TL
+(How it works) Tj
+ET
+BT
+/F1 9.1 Tf
+56 468 Td
+11 TL
+(- UI: Next.js App Router page composes React sections; layout adds theme, analytics, chatbot, and global effects.) Tj
+ET
+BT
+/F1 9.1 Tf
+56 452 Td
+11 TL
+(- Data: Static portfolio seed data lives in app/data/portfolio.ts; several sections fetch live content from Firestore.) Tj
+ET
+BT
+/F1 9.1 Tf
+56 436 Td
+11 TL
+(- Services: Firestore stores contact_logs, guestbook, analytics/views, projects, skills, and certifications.) Tj
+ET
+BT
+/F1 9.1 Tf
+56 420 Td
+11 TL
+(- AI flow: PersonalChatbot -> POST /api/chat -> GoogleGenerativeAI with GEMINI_API_KEY + embedded portfolio/resume context.) Tj
+ET
+BT
+/F1 9.1 Tf
+56 404 Td
+11 TL
+(- Admin flow: /admin reads contact_logs and writes portfolioData into Firestore collections for site content seeding.) Tj
+ET
+BT
+/F2 13 Tf
+46 386 Td
+14 TL
+(How to run) Tj
+ET
+BT
+/F1 9.3 Tf
+56 370 Td
+11 TL
+(1. Run npm install.) Tj
+ET
+BT
+/F1 9.3 Tf
+56 354 Td
+11 TL
+(2. Set GEMINI_API_KEY for the chat API; Firebase keys are committed in app/lib/firebase.ts.) Tj
+ET
+BT
+/F1 9.3 Tf
+56 338 Td
+11 TL
+(3. Run npm run dev, then open the local Next.js URL.) Tj
+ET
+BT
+/F1 9.3 Tf
+56 322 Td
+11 TL
+(4. If Firestore collections are empty, use /admin to sync projects, skills, and certifications.) Tj
+ET
+BT
+/F1 8.8 Tf
+46 42 Td
+10 TL
+(Not found in repo: production deployment URL, test commands, and environment setup beyond GEMINI_API_KEY.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000003223 00000 n 
+0000003293 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3368
+%%EOF

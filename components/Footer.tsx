@@ -36,11 +36,11 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="py-20 border-t border-white/5 relative overflow-hidden">
+    <footer className="py-20 border-t border-border relative overflow-hidden">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row justify-between items-start gap-12">
           <div className="max-w-xs">
-             <div className="font-heading font-black tracking-tighter text-2xl mb-4">
+            <div className="font-heading font-black tracking-tighter text-2xl mb-4">
               AKASH<span className="text-primary">.</span>
             </div>
             <p className="text-foreground/40 text-sm leading-relaxed mb-8">
@@ -78,7 +78,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20">
+        <div className="mt-20 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-[0.4em] text-foreground/20">
           <p>© {new Date().getFullYear()} Akash Mani</p>
           <p>Nexus Design System v2.0</p>
         </div>

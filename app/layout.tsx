@@ -21,19 +21,23 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
-  title: "Akash Mani | Full-Stack Developer",
+  title: "Akash Mani — Full-Stack Developer | React, Next.js & Node.js",
   description:
-    "Portfolio of Akash Mani, a full-stack developer building modern web applications with React, Next.js, Node.js, APIs, and scalable product foundations.",
+    "Akash Mani is a full-stack developer from Kolkata building production-ready applications with React, Next.js, Node.js, MongoDB and TypeScript. Open to internships and junior roles.",
+  keywords: ["Akash Mani", "Full-Stack Developer", "React", "Next.js", "Node.js", "Portfolio", "Kolkata"],
   icons: {
     icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: "Akash Mani — Full-Stack Developer",
+    description: "Building products that ship. React, Next.js, Node.js, TypeScript.",
+    type: "website",
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false, // Prevents accidental zooming on inputs
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
